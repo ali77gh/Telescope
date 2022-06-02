@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:telescope/src/observable.dart';
 
-class SimpleTextSampleViewModel{
+
+class SimpleTextSampleLayout extends StatefulWidget {
 
   static var textValue = Observable("");
 
-}
-
-class SimpleTextSampleLayout extends StatefulWidget {
   @override
   State<SimpleTextSampleLayout> createState() => SimpleTextSampleLayoutState();
 }
@@ -23,7 +21,7 @@ class SimpleTextSampleLayoutState extends State<SimpleTextSampleLayout> {
         child: SafeArea(
             child: Container(
               color: Colors.white,
-              child: Text(SimpleTextSampleViewModel.textValue.get(this)!),
+              child: Text(SimpleTextSampleLayout.textValue.get(this)!),
             )
         )
     );

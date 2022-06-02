@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 class Observable<T>{
 
   T? _value;
-  final Set<State> _states = <State>{};
+  final Set<Function> _callbacks = <Function>{};
 
   Observable(T? defaultValue){
     _value = defaultValue;
+  }
+
+  void subscribe(Function callback){
+      _callbacks.add(callback);
   }
 
   /// ```dart
   /// pass null while you don't need callback
   /// ```
   T? get(State? state){
-    if(state!=null) _states.add(state);
+    if(state!=null) subscribe(state.setState);
     return _value;
   }
 
@@ -25,8 +29,12 @@ class Observable<T>{
   }
 
   void notifyAll(){
-    for(State state in _states){
-      state.setState(() {}); // this will make State call build in next frame render
+    for(Function callback in _callbacks){
+      if(callback is Function(VoidCallback)){
+        callback((){});
+      }else{
+        callback(); // this will make State call build in next frame render
+      }
     }
   }
 }

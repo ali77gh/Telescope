@@ -7,7 +7,7 @@ void main() {
   runApp(MyApp());
 
   Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-    SimpleTextSampleViewModel.textValue.value = SimpleTextSampleViewModel.textValue.get(null)! + "a";
+    SimpleTextSampleLayout.textValue.value = SimpleTextSampleLayout.textValue.get(null)! + "a";
   });
 }
 
