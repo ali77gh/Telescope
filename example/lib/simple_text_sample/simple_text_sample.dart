@@ -15,13 +15,18 @@ class SimpleTextSampleLayoutState extends State<SimpleTextSampleLayout> {
   @override
   Widget build(BuildContext context) {
 
+    var style = const TextStyle(fontSize: 60);
     print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(
             child: Container(
               color: Colors.white,
-              child: Text(SimpleTextSampleLayout.textValue.get(this)!),
+              child: Column(children: [
+                Text(SimpleTextSampleLayout.textValue.get(this)!,style: style),
+                // Text(SimpleTextSampleLayout.textValue.get(this)!,style: style),
+                // Text(SimpleTextSampleLayout.textValue.get(this)!.length.toString(),style: style),
+              ],),
             )
         )
     );

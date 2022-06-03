@@ -25,16 +25,38 @@ class Observable<T>{
   set value(T? value){
     if(_value.hashCode == value.hashCode) return; // prevents recreate view while data is same as old one
     _value = value;
-    notifyAll();
+    _notifyAll();
   }
 
-  void notifyAll(){
+  void _notifyAll(){
     for(Function callback in _callbacks){
       if(callback is Function(VoidCallback)){
-        callback((){});
+        try{
+          // it may crash while widget is not mounted
+          // TODO check this and remove print
+          callback((){});
+        } catch(e) {
+          print(e);
+        }
       }else{
         callback(); // this will make State call build in next frame render
       }
     }
   }
+
+  void apply({ Function(T? value)? change }){
+    if(change != null) change(_value);
+    _notifyAll();
+  }
+
+  Observable<T> dependOn(List<Observable> observables, T Function() calculate){
+    for(var o in observables){
+      o.subscribe((){
+        _value = calculate();
+        _notifyAll();
+      });
+    }
+    return this;
+  }
+
 }
