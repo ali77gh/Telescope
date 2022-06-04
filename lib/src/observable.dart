@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 
 class Observable<T>{
 
-  T? _value;
+  T _value;
   final Set<Function> _callbacks = <Function>{};
 
-  Observable(T? defaultValue){
-    _value = defaultValue;
-  }
+  Observable(this._value);
 
   void subscribe(Function callback){
       _callbacks.add(callback);
@@ -17,12 +15,16 @@ class Observable<T>{
   /// ```dart
   /// pass null while you don't need callback
   /// ```
-  T? get(State? state){
-    if(state!=null) subscribe(state.setState);
+  T watch(State state){
+    subscribe(state.setState);
     return _value;
   }
 
-  set value(T? value){
+  T get value {
+    return _value;
+  }
+
+  set value(T value){
     if(_value.hashCode == value.hashCode) return; // prevents recreate view while data is same as old one
     _value = value;
     _notifyAll();
@@ -58,5 +60,4 @@ class Observable<T>{
     }
     return this;
   }
-
 }

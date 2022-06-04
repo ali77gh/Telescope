@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:telescope/src/observable.dart';
 
 
-class SimpleTextSampleLayout extends StatefulWidget {
-
-  static var textValue = Observable("");
-
+class TextSample extends StatefulWidget {
   @override
-  State<SimpleTextSampleLayout> createState() => SimpleTextSampleLayoutState();
+  State<TextSample> createState() => TextSampleState();
 }
 
-class SimpleTextSampleLayoutState extends State<SimpleTextSampleLayout> {
+class TextSampleState extends State<TextSample> {
+
+  static var textValue = Observable("");
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +22,12 @@ class SimpleTextSampleLayoutState extends State<SimpleTextSampleLayout> {
             child: Container(
               color: Colors.white,
               child: Column(children: [
-                Text(SimpleTextSampleLayout.textValue.get(this)!,style: style),
-                // Text(SimpleTextSampleLayout.textValue.get(this)!,style: style),
-                // Text(SimpleTextSampleLayout.textValue.get(this)!.length.toString(),style: style),
+                Text(textValue.watch(this),style: style),
+                Text(textValue.watch(this),style: style),
+                Text(textValue.watch(this).length.toString(),style: style),
               ],),
             )
         )
     );
-  }
-
-  @override
-  void setState(fn) {
-    if(mounted) {
-      super.setState(fn);
-    }
   }
 }

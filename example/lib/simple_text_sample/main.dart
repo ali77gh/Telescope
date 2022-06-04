@@ -7,7 +7,7 @@ void main() {
   runApp(MyApp());
 
   Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-    SimpleTextSampleLayout.textValue.value = SimpleTextSampleLayout.textValue.get(null)! + "a";
+    TextSampleState.textValue.value += "a";
   });
 }
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: SimpleTextSampleLayout()
+        home: TextSample()
     );
   }
 }

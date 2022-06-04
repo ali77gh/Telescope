@@ -17,17 +17,21 @@ class Human{
 void main() {
   runApp(MyApp());
 
-  // Wrong Way
+  var human = ObjectApplySampleLayoutState.human;
   Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-    ObjectApplySampleLayout.human.get(null)!.age++;
-  });
 
-  // Correct Way
-  // Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-  //   ObjectApplySampleLayout.human.apply(change: (human){
-  //     human!.age++;
-  //   });
-  // });
+    // Wrong way to update object
+    human.value.age++;
+
+    // Correct way to update object
+    // human.apply(change: (human){
+    //   human!.age++;
+    // });
+
+    // Also works (reassign)
+    // human.value = Human(human.value.name, human.value.age + 1);
+
+  });
 }
 
 class MyApp extends StatelessWidget {
