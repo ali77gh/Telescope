@@ -1,4 +1,4 @@
 library telescope;
 
 
-export './src/observable.dart' show Observable;
+export './src/telescope.dart' show Telescope;

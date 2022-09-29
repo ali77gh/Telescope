@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 
-class Observable<T>{
+class Telescope<T>{
 
   T _value;
   final Set<Function> _callbacks = <Function>{};
 
-  Observable(this._value);
+  Telescope(this._value);
 
   void subscribe(Function callback){
       _callbacks.add(callback);
@@ -51,7 +51,7 @@ class Observable<T>{
     _notifyAll();
   }
 
-  Observable<T> dependOn(List<Observable> observables, T Function() calculate){
+  Telescope<T> dependOn(List<Telescope> observables, T Function() calculate){
     for(var o in observables){
       o.subscribe((){
         _value = calculate();

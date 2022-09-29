@@ -21,12 +21,12 @@ void main() {
   Timer.periodic(const Duration(milliseconds: 1000), (timer) {
 
     // Wrong way to update object
-    human.value.age++;
+    // human.value.age++;
 
     // Correct way to update object
-    // human.apply(change: (human){
-    //   human!.age++;
-    // });
+    human.apply(change: (human){
+      human!.age++;
+    });
 
     // Also works (reassign)
     // human.value = Human(human.value.name, human.value.age + 1);

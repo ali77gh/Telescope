@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/observable.dart';
+import 'package:telescope/src/telescope.dart';
 
 
 class DependObservableSampleLayout extends StatefulWidget {
@@ -10,15 +10,15 @@ class DependObservableSampleLayout extends StatefulWidget {
 class DependObservableSampleLayoutState extends State<DependObservableSampleLayout> {
 
   // observables
-  static var height = Observable(187);
-  static var weight = Observable(70);
+  static var height = Telescope(187);
+  static var weight = Telescope(70);
 
   // BMI = (Weight in Kilograms / (Height in Meters x Height in Meters))
-  static var bmi = Observable(0.0).dependOn([height,weight], () {
+  static var bmi = Telescope(0.0).dependOn([height,weight], () {
     return weight.value / ((height.value/100) * (height.value/100));
   });
 
-  static var showingText = Observable("").dependOn([height,weight,bmi], (){
+  static var showingText = Telescope("").dependOn([height,weight,bmi], (){
     return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
   });
 

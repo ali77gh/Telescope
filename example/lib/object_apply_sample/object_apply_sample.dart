@@ -1,6 +1,6 @@
 import 'package:app/object_apply_sample/main.dart';
 import 'package:flutter/material.dart';
-import 'package:telescope/src/observable.dart';
+import 'package:telescope/src/telescope.dart';
 
 
 class ObjectApplySampleLayout extends StatefulWidget {
@@ -11,7 +11,7 @@ class ObjectApplySampleLayout extends StatefulWidget {
 
 class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
 
-  static var human = Observable<Human>(Human("Ali",23));
+  static var human = Telescope<Human>(Human("Ali",23));
 
   @override
   Widget build(BuildContext context) {

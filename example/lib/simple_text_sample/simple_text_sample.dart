@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/observable.dart';
+import 'package:telescope/src/telescope.dart';
 
 
 class TextSample extends StatefulWidget {
@@ -9,7 +9,7 @@ class TextSample extends StatefulWidget {
 
 class TextSampleState extends State<TextSample> {
 
-  static var textValue = Observable("");
+  static var textValue = Telescope("");
 
   @override
   Widget build(BuildContext context) {
