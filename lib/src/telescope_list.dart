@@ -16,7 +16,10 @@ class TelescopeList<T> extends Telescope<List<T>>{
   void insertAll(int index, Iterable<T> rows) =>
       apply(change:(list){ list!.insertAll(index,rows); });
 
-  // TODO add [] operator setter and getter
+  T? operator [](int index) => value[index];
+
+  void operator []=(int index, T value) =>
+    apply(change: (list){list![index] = value;});
 
   void remove(T row) =>
       apply(change:(list){ list!.remove(row); });
