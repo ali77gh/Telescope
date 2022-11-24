@@ -2,7 +2,7 @@
 <img src="telescope.png"> <br>
 Just another state manager for flutter based on observable design pattern which is in <b>Beta</b> yet.
 
-Telescope Trys to be:
+Telescope tries to be:
 1. Easy to use.
 2. Flexible.
 3. Make it harder to make bugs.
