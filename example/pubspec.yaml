@@ -29,6 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.0.15
 
   telescope:
     path: ../
