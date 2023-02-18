@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app/simple_text_sample/simple_text_sample.dart';
+import 'package:app/01_simple_text_sample/simple_text_sample.dart';
 import 'package:flutter/material.dart';
 
 void main() {

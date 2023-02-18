@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app/object_apply_sample/object_apply_sample.dart';
+import 'package:app/02_object_apply_sample/object_apply_sample.dart';
 import 'package:flutter/material.dart';
 
 class Human{

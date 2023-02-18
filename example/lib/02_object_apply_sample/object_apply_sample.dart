@@ -1,4 +1,4 @@
-import 'package:app/object_apply_sample/main.dart';
+import 'package:app/02_object_apply_sample/main.dart';
 import 'package:flutter/material.dart';
 import 'package:telescope/src/telescope.dart';
 

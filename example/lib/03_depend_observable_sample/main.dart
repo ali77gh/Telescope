@@ -1,4 +1,4 @@
-import 'package:app/depend_observable_sample/object_apply_sample.dart';
+import 'package:app/03_depend_observable_sample/depends_on_sample.dart';
 import 'package:flutter/material.dart';
 
 void main() {

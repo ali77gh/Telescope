@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:telescope/src/telescope.dart';
 
 
-class DependObservableSampleLayout extends StatefulWidget {
+class SaveOnDiskSampleLayout extends StatefulWidget {
   @override
-  State<DependObservableSampleLayout> createState() => DependObservableSampleLayoutState();
+  State<SaveOnDiskSampleLayout> createState() => SaveOnDiskSampleLayoutState();
 }
 
-class DependObservableSampleLayoutState extends State<DependObservableSampleLayout> {
+class SaveOnDiskSampleLayoutState extends State<SaveOnDiskSampleLayout> {
 
   // observables
-  static var height = Telescope(187);
-  static var weight = Telescope(70);
+  static var height = Telescope(187).saveOnDisk("bmi_height_input");
+  static var weight = Telescope(70).saveOnDisk("bmi_weight_input");
 
   // BMI = (Weight in Kilograms / (Height in Meters x Height in Meters))
   static var bmi = Telescope(0.0).dependOn([height,weight], () {
@@ -21,7 +21,6 @@ class DependObservableSampleLayoutState extends State<DependObservableSampleLayo
   static var showingText = Telescope("").dependOn([height,weight,bmi], (){
     return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
   });
-
 
   @override
   Widget build(BuildContext context) {
