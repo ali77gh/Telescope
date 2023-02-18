@@ -1,10 +1,13 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:telescope/src/on_disk_savable.dart';
+
+import 'depends_on_telescope.dart';
+import 'on_disk_savable.dart';
 
 // TODO make apply automatic for non-built-in types
 // TODO make other data structures (map, set,...)
+
 
 class Telescope<T>{
 
@@ -15,8 +18,23 @@ class Telescope<T>{
   bool get isSavable => _onDiskId != null;
   bool isDependent = false;
 
-  // TODO T should not be list or map or set ,... show the guide
-  Telescope(this._value);
+  Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn}){
+
+    if(T == List || T is List){
+      print("Telescope<$T> is not a good idea you better use TelescopeList");
+    }
+
+    if(onDiskId!=null && dependsOn!=null){
+      throw "An on disk telescope can't be dependent (does not makes any sense)";
+    }
+
+    if(onDiskId!=null){
+      _saveOnDisk(onDiskId);
+    }
+    if(dependsOn!=null){
+      _dependOn(dependsOn.observables, dependsOn.calculate);
+    }
+  }
 
   void subscribe(Function callback){
       _callbacks.add(callback);
@@ -83,11 +101,7 @@ class Telescope<T>{
     _notifyAll();
   }
 
-  // TODO move this to constructor as optional param (then it will not shows up everywhere on auto-complete and cant be call twice)
-  Telescope<T> dependOn(List<Telescope> observables, T Function() calculate){
-    if(isSavable){
-      throw "${T.toString()} is a onDiskSavable object and cant be depend on something!";
-    }
+  Telescope<T> _dependOn(List<Telescope> observables, T Function() calculate){
     for(var o in observables){
       o.subscribe((){
         _value = calculate();
@@ -97,11 +111,7 @@ class Telescope<T>{
     return this;
   }
 
-  // TODO move this to constructor as optional param (then it will not shows up everywhere on auto-complete and cant be call twice)
-  Telescope<T> saveOnDisk(String onDiskId){
-    if(isDependent){
-      throw "${T.toString()} is a dependent object and save on disk seems to be wrong!";
-    }
+  Telescope<T> _saveOnDisk(String onDiskId){
 
     if(T is! OnDiskSavable && !_isBuiltIn()) {
       throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";

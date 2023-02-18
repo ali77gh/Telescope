@@ -1,7 +1,8 @@
 
 import 'dart:math';
 
-import 'package:telescope/telescope.dart';
+import 'telescope.dart';
+
 
 class TelescopeList<T> extends Telescope<List<T>>{
 

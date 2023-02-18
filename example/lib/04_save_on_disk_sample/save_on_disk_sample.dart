@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telescope/src/telescope.dart';
+import 'package:telescope/src/depends_on_telescope.dart';
 
 
 class SaveOnDiskSampleLayout extends StatefulWidget {
@@ -10,17 +11,17 @@ class SaveOnDiskSampleLayout extends StatefulWidget {
 class SaveOnDiskSampleLayoutState extends State<SaveOnDiskSampleLayout> {
 
   // observables
-  static var height = Telescope(187).saveOnDisk("bmi_height_input");
-  static var weight = Telescope(70).saveOnDisk("bmi_weight_input");
+  static var height = Telescope(187,onDiskId: "bmi_height_input");
+  static var weight = Telescope(70,onDiskId: "bmi_weight_input");
 
   // BMI = (Weight in Kilograms / (Height in Meters x Height in Meters))
-  static var bmi = Telescope(0.0).dependOn([height,weight], () {
+  static var bmi = Telescope(0.0, dependsOn: DependsOnTelescope([height,weight], () {
     return weight.value / ((height.value/100) * (height.value/100));
-  });
+  }));
 
-  static var showingText = Telescope("").dependOn([height,weight,bmi], (){
+  static var showingText  = Telescope("", dependsOn: DependsOnTelescope([bmi], () {
     return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
-  });
+  }));
 
   @override
   Widget build(BuildContext context) {
