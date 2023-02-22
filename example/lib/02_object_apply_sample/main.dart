@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:app/02_object_apply_sample/object_apply_sample.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +19,6 @@ class Human implements TelescopeHash{
 
 void main() {
   runApp(MyApp());
-
-  var human = ObjectApplySampleLayoutState.human;
-  Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-
-    human.value.age++;
-
-  });
 }
 
 class MyApp extends StatelessWidget {

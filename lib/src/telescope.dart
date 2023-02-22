@@ -69,8 +69,8 @@ class Telescope<T>{
     _value = value;
 
     // prevents recreate view while data is same as old one
-    if(getValueHash(_value) == getValueHash(value)) return;
-    
+    // if(getValueHash(_value) == getValueHash(value)) return;
+
     _notifyAll();
 
     if(isSavable){

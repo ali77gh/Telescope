@@ -11,17 +11,24 @@ class DependObservableSampleLayout extends StatefulWidget {
 class DependObservableSampleLayoutState extends State<DependObservableSampleLayout> {
 
   // observables
-  static var height = Telescope(187);
-  static var weight = Telescope(70);
+  late Telescope<int> height;
+  late Telescope<int> weight;
+  late Telescope<double> bmi;
+  late Telescope<String> showingText;
 
-  // BMI = (Weight in Kilograms / (Height in Meters x Height in Meters))
-  static var bmi = Telescope(0.0, dependsOn: DependsOnTelescope([height,weight], () {
-    return weight.value / ((height.value/100) * (height.value/100));
-  }));
+  @override
+  void initState(){
+    super.initState();
 
-  static var showingText  = Telescope("", dependsOn: DependsOnTelescope([bmi], () {
-    return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
-  }));
+    height = Telescope(186);
+    weight = Telescope(72);
+    bmi = Telescope(0.0, dependsOn: DependsOnTelescope([height,weight], () {
+      return weight.value / ((height.value/100) * (height.value/100));
+    }));
+    showingText  = Telescope("", dependsOn: DependsOnTelescope([bmi], () {
+      return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {

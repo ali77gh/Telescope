@@ -11,7 +11,7 @@ class ObjectApplySampleLayout extends StatefulWidget {
 
 class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
 
-  static var human = Telescope<Human>(Human("Ali",23));
+  var human = Telescope<Human>(Human("Ali",23));
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,19 @@ class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(
-            child: Container(
-              color: Colors.white,
-              child: Column(children: [
-                Text(
+            child: GestureDetector(
+              onTap: (){
+                human.value.age++;
+              },
+              child: Container(
+                color: Colors.white,
+                child: Column(children: [
+                  Text(
                     human.watch(this).toString(),
                     style: const TextStyle(fontSize: 60),
-                ),
-              ],),
+                  ),
+                ],),
+              ),
             )
         )
     );

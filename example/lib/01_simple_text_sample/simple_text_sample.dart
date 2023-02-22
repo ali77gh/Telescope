@@ -3,13 +3,14 @@ import 'package:telescope/src/telescope.dart';
 
 
 class TextSample extends StatefulWidget {
+
   @override
   State<TextSample> createState() => TextSampleState();
 }
 
 class TextSampleState extends State<TextSample> {
 
-  static var textValue = Telescope("");
+  var textValue = Telescope("");
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,18 @@ class TextSampleState extends State<TextSample> {
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(
-            child: Container(
-              color: Colors.white,
-              child: Column(children: [
-                Text(textValue.watch(this),style: style),
-                Text(textValue.watch(this),style: style),
-                Text(textValue.watch(this).length.toString(),style: style),
-              ],),
+            child: GestureDetector(
+              onTap: (){
+                textValue.value += "a";
+              },
+              child: Container(
+                color: Colors.white,
+                child: Column(children: [
+                  Text(textValue.watch(this),style: style),
+                  Text(textValue.watch(this),style: style),
+                  Text(textValue.watch(this).length.toString(),style: style),
+                ],),
+              ),
             )
         )
     );
