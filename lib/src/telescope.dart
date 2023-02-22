@@ -20,7 +20,6 @@ class Telescope<T>{
 
   Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn}){
 
-    // TODO check this on compile time if its possible
     if(!_isBuiltIn() && _value is! OnDiskSavable && _value is! TelescopeHash){
       throw "${T.toString()} is not implementing OnDiskSavable or TelescopeHash and is not a built-in type(int|string|double|bool) so there is no way to detect object changes";
     }
@@ -38,30 +37,21 @@ class Telescope<T>{
   }
 
   void subscribe(Function callback){
-      _callbacks.add(callback);
+    _callbacks.add(callback);
   }
 
-  // TODO updateIf -> bool Function(T oldValue, T newValue) updateIf
   T watch(State state){
-
     subscribe(state.setState);
     return _value;
   }
 
-  String getValueHash(){
-    if(_value is OnDiskSavable){
-      return (_value as OnDiskSavable).toOnDiskString();
-    }else if(_value is TelescopeHash){
-      return (_value as TelescopeHash).toTelescopeHash();
-    }
-    return _value.toString();
-  }
+
   T get value {
     if(_value is OnDiskSavable || _value is TelescopeHash){
-      var beforeChangeHash = getValueHash();
+      var beforeChangeHash = getValueHash<T>(_value);
       // push callback to event loop immediately
       Future.delayed(Duration.zero, (){
-        var afterChangeHash = getValueHash();
+        var afterChangeHash = getValueHash<T>(_value);
         if(beforeChangeHash != afterChangeHash){
           _notifyAll();
         }
@@ -76,8 +66,11 @@ class Telescope<T>{
           "other telescopes and the value can't be set";
     }
 
-    if(_value.hashCode == value.hashCode) return; // prevents recreate view while data is same as old one
     _value = value;
+
+    // prevents recreate view while data is same as old one
+    if(getValueHash(_value) == getValueHash(value)) return;
+    
     _notifyAll();
 
     if(isSavable){
@@ -104,7 +97,6 @@ class Telescope<T>{
       if(callback is Function(VoidCallback)){
         try{
           // it may crash while widget is not mounted
-          // TODO check this and remove print
           callback((){});
         } catch(e) {
           print(e);
@@ -171,4 +163,12 @@ class Telescope<T>{
         (T == int);
   }
 
+  static String getValueHash<T>(T value){
+    if(value is OnDiskSavable){
+      return (value).toOnDiskString();
+    }else if(value is TelescopeHash){
+      return (value).toTelescopeHash();
+    }
+    return value.toString();
+  }
 }
