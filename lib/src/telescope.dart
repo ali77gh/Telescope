@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'depends_on_telescope.dart';
 import 'on_disk_savable.dart';
+import 'telescope_hash.dart';
 
-// TODO make apply automatic for non-built-in types
 // TODO make other data structures (map, set,...)
-
+// TODO add standard docs to functions
 
 class Telescope<T>{
 
@@ -20,8 +20,9 @@ class Telescope<T>{
 
   Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn}){
 
-    if(T == List || T is List){
-      print("Telescope<$T> is not a good idea you better use TelescopeList");
+    // TODO check this on compile time if its possible
+    if(!_isBuiltIn() && _value is! OnDiskSavable && _value is! TelescopeHash){
+      throw "${T.toString()} is not implementing OnDiskSavable or TelescopeHash and is not a built-in type(int|string|double|bool) so there is no way to detect object changes";
     }
 
     if(onDiskId!=null && dependsOn!=null){
@@ -47,7 +48,25 @@ class Telescope<T>{
     return _value;
   }
 
+  String getValueHash(){
+    if(_value is OnDiskSavable){
+      return (_value as OnDiskSavable).toOnDiskString();
+    }else if(_value is TelescopeHash){
+      return (_value as TelescopeHash).toTelescopeHash();
+    }
+    return _value.toString();
+  }
   T get value {
+    if(_value is OnDiskSavable || _value is TelescopeHash){
+      var beforeChangeHash = getValueHash();
+      // push callback to event loop immediately
+      Future.delayed(Duration.zero, (){
+        var afterChangeHash = getValueHash();
+        if(beforeChangeHash != afterChangeHash){
+          _notifyAll();
+        }
+      });
+    }
     return _value;
   }
 
@@ -63,7 +82,7 @@ class Telescope<T>{
 
     if(isSavable){
       SharedPreferences.getInstance().then((pref){
-        if(T is OnDiskSavable){
+        if(_value is OnDiskSavable){
           pref.setString(
               _onDiskId!, (value as OnDiskSavable).toOnDiskString()
           ).then((value){});
@@ -96,11 +115,6 @@ class Telescope<T>{
     }
   }
 
-  void apply({ Function(T? value)? change }){
-    if(change != null) change(_value);
-    _notifyAll();
-  }
-
   Telescope<T> _dependOn(List<Telescope> observables, T Function() calculate){
     for(var o in observables){
       o.subscribe((){
@@ -113,13 +127,13 @@ class Telescope<T>{
 
   Telescope<T> _saveOnDisk(String onDiskId){
 
-    if(T is! OnDiskSavable && !_isBuiltIn()) {
+    if(_value is! OnDiskSavable && !_isBuiltIn()) {
       throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";
     }
 
     this._onDiskId = onDiskId;
     SharedPreferences.getInstance().then((pref){
-      if(T is OnDiskSavable){
+      if(_value is OnDiskSavable){
 
         // not assign while its not on disk yet (keeps default value)
         String? str = pref.getString(onDiskId);
