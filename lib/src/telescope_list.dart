@@ -1,38 +1,32 @@
 
 import 'dart:math';
 
+import 'depends_on_telescope.dart';
+import 'on_disk_savable.dart';
+import 'telescope_hash.dart';
 import 'telescope.dart';
 
 
 class TelescopeList<T> extends Telescope<List<T>>{
 
-  TelescopeList() : super([]);
-  //
-  // void add(T row) =>
-  //     apply(change:(list){ list!.add(row); });
-  // void addAll(Iterable<T> rows) =>
-  //     apply(change:(list){ list!.addAll(rows); });
-  // void insert(int index, T row) =>
-  //     apply(change:(list){ list!.insert(index, row); });
-  // void insertAll(int index, Iterable<T> rows) =>
-  //     apply(change:(list){ list!.insertAll(index,rows); });
-  //
-  // T? operator [](int index) => value[index];
-  //
-  // void operator []=(int index, T value) =>
-  //   apply(change: (list){list![index] = value;});
-  //
-  // void remove(T row) =>
-  //     apply(change:(list){ list!.remove(row); });
-  // void removeAt(int index) =>
-  //     apply(change:(list){ list!.removeAt(index); });
-  // void removeWhere(bool Function(T element) test) =>
-  //     apply(change:(list){ list!.removeWhere(test); });
-  // void clear() =>
-  //     apply(change:(list){ list!.clear(); });
-  //
-  // void sort([int Function(T a, T b)? compare]) =>
-  //     apply(change:(list){ list!.sort(compare); });
-  // void shuffle([Random? random]) =>
-  //     apply(change:(list){ list!.shuffle(random); });
+  // TODO onDiskId and save on disk
+  TelescopeList(List<T> items, {DependsOnTelescope<List<T>>? dependsOn})
+      : super(items, dependsOn: dependsOn, iWillCallNotifyAll: true);
+
+  void add(T row){ value.add(row); notifyAll(); }
+  void addAll(Iterable<T> rows){ value.addAll(rows); notifyAll(); }
+  void insert(int index, T row){ value.insert(index, row); notifyAll(); }
+  void insertAll(int index, Iterable<T> rows){ value.insertAll(index, rows); notifyAll(); }
+
+  T? operator [](int index) => value[index];
+
+  void operator []=(int index, T val){ value[index] = val; notifyAll(); }
+
+  void remove(T row){ value.remove(row); notifyAll(); }
+  void removeAt(int index){ value.removeAt(index); notifyAll(); }
+  void removeWhere(bool Function(T element) test){ value.removeWhere(test); notifyAll(); }
+  void clear(){ value.clear(); notifyAll(); }
+
+  void sort([int Function(T a, T b)? compare]){ value.sort(compare); notifyAll(); }
+  void shuffle([Random? random]){ value.shuffle(random); notifyAll();}
 }

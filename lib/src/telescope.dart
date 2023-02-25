@@ -1,4 +1,3 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +17,20 @@ class Telescope<T>{
   bool get isSavable => _onDiskId != null;
   bool isDependent = false;
 
-  Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn}){
+  Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn, iWillCallNotifyAll=false}){
 
-    if(!_isBuiltIn() && _value is! OnDiskSavable && _value is! TelescopeHash){
-      throw "${T.toString()} is not implementing OnDiskSavable or TelescopeHash and is not a built-in type(int|string|double|bool) so there is no way to detect object changes";
+    if(!iWillCallNotifyAll){
+      if(!_isBuiltIn() && _value is! OnDiskSavable && _value is! TelescopeHash){
+        try {
+          throw "${T.toString()} is not implementing OnDiskSavable or TelescopeHash and is not a built-in type(int|string|double|bool)"
+              " so there is no way to detect object changes"
+              "you have two options:"
+              "   1. implement TelescopeHash on ${T.toString()} if you can (recommended)"
+              "   2. pass iWillCallNotifyAll to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
+        } catch (e, s) {
+          print(s);
+        }
+      }
     }
 
     if(onDiskId!=null && dependsOn!=null){
@@ -53,7 +62,7 @@ class Telescope<T>{
       Future.delayed(Duration.zero, (){
         var afterChangeHash = getValueHash<T>(_value);
         if(beforeChangeHash != afterChangeHash){
-          _notifyAll();
+          notifyAll();
         }
       });
     }
@@ -71,7 +80,7 @@ class Telescope<T>{
     // prevents recreate view while data is same as old one
     // if(getValueHash(_value) == getValueHash(value)) return;
 
-    _notifyAll();
+    notifyAll();
 
     if(isSavable){
       SharedPreferences.getInstance().then((pref){
@@ -92,7 +101,7 @@ class Telescope<T>{
     }
   }
 
-  void _notifyAll(){
+  void notifyAll(){
     for(Function callback in _callbacks){
       if(callback is Function(VoidCallback)){
         try{
@@ -108,10 +117,11 @@ class Telescope<T>{
   }
 
   Telescope<T> _dependOn(List<Telescope> observables, T Function() calculate){
+    _value = calculate();
     for(var o in observables){
       o.subscribe((){
         _value = calculate();
-        _notifyAll();
+        notifyAll();
       });
     }
     return this;
@@ -150,7 +160,7 @@ class Telescope<T>{
         }
 
       }
-      _notifyAll();
+      notifyAll();
     });
     return this;
   }

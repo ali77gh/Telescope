@@ -16,9 +16,8 @@ class InputLayoutState extends State<InputLayout> {
   Widget build(BuildContext context) {
 
     print("input build");
-    var controller = TextEditingController(text: "");
     return TextField(
-      controller: controller,
+      controller: TextEditingController(text: ""),
       onChanged: (content){
         widget.text.value = content;
       },
