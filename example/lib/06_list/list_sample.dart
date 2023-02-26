@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telescope/src/telescope.dart';
 import 'package:telescope/telescope.dart';
+import 'dart:math';
 
 
 class ListSampleLayout extends StatefulWidget {
@@ -30,40 +31,50 @@ class ListSampleLayoutState extends State<ListSampleLayout> {
   @override
   Widget build(BuildContext context) {
 
-    // TODO add fab to add item to list
     // TODO change a row
+
     print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(
             child: Container(
               color: Colors.white,
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Expanded(
-                      child: ListView.builder(
-                      itemCount: showingItems.watch(this).length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                            margin: const EdgeInsets.all(20),
-                            child: Text(
-                                "$index. ${showingItems[index]} (len:${showingItems[index]!.length})",
-                                style: const TextStyle(fontSize: 40),
-                            )
-                        );
-                      })
-                  ),
                   TextField(
+                    decoration: const InputDecoration(hintText: 'search'),
                     controller: textController,
                     style: const TextStyle(fontSize: 50),
                     onChanged: (content){
                       searchText.value = content;
                     },
-                  )
+                  ),
+                  Expanded(
+                      child: ListView.builder(
+                      itemCount: showingItems.watch(this).length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                            // margin: const EdgeInsets.all(20),
+                            child: Text(
+                                "${index+1}. ${showingItems[index]} (len:${showingItems[index]!.length})",
+                                style: const TextStyle(fontSize: 40),
+                            )
+                        );
+                      })
+                  ),
+                  FloatingActionButton(
+                      onPressed: (){ items.add(randomText()); },
+                      child: const Text("Add"))
                 ],
               ),
             )
         )
     );
+
   }
+  final _chars = 'abcdefg';
+  String randomText() => String.fromCharCodes(Iterable.generate(
+      5, (_) => _chars.codeUnitAt(Random().nextInt(_chars.length))
+  ));
 }
