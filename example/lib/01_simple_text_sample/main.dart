@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
-
-  // Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-  //   TextSampleState.textValue.value += "a";
-  // });
 }
 
 class MyApp extends StatelessWidget {

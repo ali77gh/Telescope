@@ -1,48 +1,72 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
-import 'depends_on_telescope.dart';
 import 'on_disk_savable.dart';
-import 'telescope_hash.dart';
 
 // TODO make other data structures (map, set,...)
 // TODO add standard docs to functions
+// TODO move disk tools to other file as static function and singleton for pref
+// TODO move type validation to other file as static method to be usable from Telescope list
 
 class Telescope<T>{
 
-  T _value;
+  late T _value;
   final Set<Function> _callbacks = <Function>{};
 
   String? _onDiskId;
   bool get isSavable => _onDiskId != null;
   bool isDependent = false;
+  bool iWillCallNotifyAll;
 
-  Telescope(this._value, {String? onDiskId, DependsOnTelescope<T>? dependsOn, iWillCallNotifyAll=false}){
+  Telescope.dependsOn(List<Telescope> dependencies, T Function() calculate,{this.iWillCallNotifyAll=false}){
+    _value = calculate();
+    for(var o in dependencies){
+      o.subscribe((){
+        _value = calculate();
+        notifyAll();
+      });
+    }
+  }
 
-    if(!iWillCallNotifyAll){
-      if(!_isBuiltIn() && _value is! OnDiskSavable && _value is! TelescopeHash){
-        try {
-          throw "${T.toString()} is not implementing OnDiskSavable or TelescopeHash and is not a built-in type(int|string|double|bool)"
-              " so there is no way to detect object changes"
-              "you have two options:"
-              "   1. implement TelescopeHash on ${T.toString()} if you can (recommended)"
-              "   2. pass iWillCallNotifyAll to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
-        } catch (e, s) {
-          print(s);
+  Telescope.saveOnDisk(this._value, String onDiskId,{this.iWillCallNotifyAll=false}){
+
+    if(_value is! OnDiskSavable && !_isBuiltIn()) {
+      throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";
+    }
+
+    _onDiskId = onDiskId;
+    SharedPreferences.getInstance().then((pref){
+      if(_value is OnDiskSavable){
+
+        // not assign while its not on disk yet (keeps default value)
+        String? str = pref.getString(onDiskId);
+        if(str != null) {
+          (_value as OnDiskSavable).parseOnDiskString(str);
         }
+      }else{ // built-in types
+
+        // not assign while its not on disk yet (keeps default value)
+        if(T == String){
+          String? temp = pref.getString(onDiskId);
+          if(temp!=null) _value = temp as T;
+        }else if (T == int){
+          int? temp = pref.getInt(onDiskId);
+          if(temp!=null) _value = temp as T;
+        }else if (T == double){
+          double? temp = pref.getDouble(onDiskId);
+          if(temp!=null) _value = temp as T;
+        }else if (T == bool){
+          bool? temp = pref.getBool(onDiskId);
+          if(temp!=null) _value = temp as T;
+        }
+
       }
-    }
+      notifyAll();
+    });
+  }
 
-    if(onDiskId!=null && dependsOn!=null){
-      throw "An on disk telescope can't be dependent (does not makes any sense)";
-    }
-
-    if(onDiskId!=null){
-      _saveOnDisk(onDiskId);
-    }
-    if(dependsOn!=null){
-      _dependOn(dependsOn.observables, dependsOn.calculate);
-    }
+  Telescope(this._value,{this.iWillCallNotifyAll=false}){
+    _checkIsValidType();
   }
 
   void subscribe(Function callback){
@@ -56,16 +80,14 @@ class Telescope<T>{
 
 
   T get value {
-    if(_value is OnDiskSavable || _value is TelescopeHash){
-      var beforeChangeHash = getValueHash<T>(_value);
-      // push callback to event loop immediately
-      Future.delayed(Duration.zero, (){
-        var afterChangeHash = getValueHash<T>(_value);
-        if(beforeChangeHash != afterChangeHash){
-          notifyAll();
-        }
-      });
-    }
+    var beforeChangeHash = _value.hashCode;
+    // push callback to event loop immediately
+    Future.delayed(Duration.zero, (){
+      var afterChangeHash = _value.hashCode;
+      if(beforeChangeHash != afterChangeHash){
+        notifyAll();
+      }
+    });
     return _value;
   }
 
@@ -73,6 +95,10 @@ class Telescope<T>{
     if(isDependent) {
       throw "this telescope is dependent on "
           "other telescopes and the value can't be set";
+    }
+
+    if(_value==null){
+      _checkIsValidType();
     }
 
     _value = value;
@@ -116,55 +142,6 @@ class Telescope<T>{
     }
   }
 
-  Telescope<T> _dependOn(List<Telescope> observables, T Function() calculate){
-    _value = calculate();
-    for(var o in observables){
-      o.subscribe((){
-        _value = calculate();
-        notifyAll();
-      });
-    }
-    return this;
-  }
-
-  Telescope<T> _saveOnDisk(String onDiskId){
-
-    if(_value is! OnDiskSavable && !_isBuiltIn()) {
-      throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";
-    }
-
-    this._onDiskId = onDiskId;
-    SharedPreferences.getInstance().then((pref){
-      if(_value is OnDiskSavable){
-
-        // not assign while its not on disk yet (keeps default value)
-        String? str = pref.getString(onDiskId);
-        if(str != null) {
-          (_value as OnDiskSavable).parseOnDiskString(str);
-        }
-      }else{ // built-in types
-
-        // not assign while its not on disk yet (keeps default value)
-        if(T == String){
-          String? temp = pref.getString(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == int){
-          int? temp = pref.getInt(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == double){
-          double? temp = pref.getDouble(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == bool){
-          bool? temp = pref.getBool(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }
-
-      }
-      notifyAll();
-    });
-    return this;
-  }
-
   // type that shared preferences supports
   bool _isBuiltIn(){
     return (T == String) ||
@@ -173,12 +150,22 @@ class Telescope<T>{
         (T == int);
   }
 
-  static String getValueHash<T>(T value){
-    if(value is OnDiskSavable){
-      return (value).toOnDiskString();
-    }else if(value is TelescopeHash){
-      return (value).toTelescopeHash();
-    }
-    return value.toString();
+  bool _implementsHashCodeProperty(){
+    if(_value == null) return true; // can't check it so we will wait until next value set
+    return _value.hashCode != identityHashCode(_value);
   }
+
+  bool _checkIsValidType(){
+    if(!iWillCallNotifyAll){
+      if(!_isBuiltIn() && !_implementsHashCodeProperty()){
+        throw "Telescope Error: ${T.toString()} is not implementing OnDiskSavable or hashCode and is not a built-in type(int|string|double|bool)"
+            " so there is no way to detect object changes "
+            "you have two options: "
+            "1. implement hashCode on ${T.toString()} if you can (recommended) "
+            "2. pass iWillCallNotifyAll to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
+      }
+    }
+    return true;
+  }
+
 }

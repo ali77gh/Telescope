@@ -1,9 +1,8 @@
 
 import 'package:app/02_object_apply_sample/object_apply_sample.dart';
 import 'package:flutter/material.dart';
-import 'package:telescope/telescope.dart';
 
-class Human implements TelescopeHash{
+class Human{
   String name;
   int age;
   Human(this.name, this.age);
@@ -14,7 +13,7 @@ class Human implements TelescopeHash{
   }
 
   @override
-  String toTelescopeHash() { return "$name$age"; }
+  int get hashCode => (name.hashCode) * age.hashCode;
 }
 
 void main() {

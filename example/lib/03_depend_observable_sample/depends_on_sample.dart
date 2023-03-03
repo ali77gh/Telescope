@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:telescope/src/telescope.dart';
-import 'package:telescope/src/depends_on_telescope.dart';
 
 
 class DependObservableSampleLayout extends StatefulWidget {
@@ -22,12 +21,14 @@ class DependObservableSampleLayoutState extends State<DependObservableSampleLayo
 
     height = Telescope(186);
     weight = Telescope(72);
-    bmi = Telescope(0.0, dependsOn: DependsOnTelescope([height,weight], () {
+
+    bmi = Telescope.dependsOn([height,weight], () {
       return weight.value / ((height.value/100) * (height.value/100));
-    }));
-    showingText  = Telescope("", dependsOn: DependsOnTelescope([bmi], () {
+    });
+
+    showingText  = Telescope.dependsOn([bmi], () {
       return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
-    }));
+    });
   }
 
   @override

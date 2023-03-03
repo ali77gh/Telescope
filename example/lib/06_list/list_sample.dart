@@ -22,10 +22,9 @@ class ListSampleLayoutState extends State<ListSampleLayout> {
     searchText = Telescope<String>("");
     items = TelescopeList<String>(["ab", "abb", "bc", "bcc" , "c"]);
 
-    showingItems = TelescopeList<String>([], dependsOn: DependsOnTelescope([items, searchText],(){
+    showingItems = TelescopeList.dependsOn([items, searchText],(){
         return items.value.where((element) => element.contains(searchText.value)).toList();
-    }));
-
+    });
   }
 
   @override

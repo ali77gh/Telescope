@@ -1,17 +1,26 @@
 
 import 'dart:math';
 
-import 'depends_on_telescope.dart';
-import 'on_disk_savable.dart';
-import 'telescope_hash.dart';
 import 'telescope.dart';
 
 
 class TelescopeList<T> extends Telescope<List<T>>{
 
+
   // TODO onDiskId and save on disk
-  TelescopeList(List<T> items, {DependsOnTelescope<List<T>>? dependsOn})
-      : super(items, dependsOn: dependsOn, iWillCallNotifyAll: true);
+  TelescopeList(List<T> items) : super(items,iWillCallNotifyAll: true);
+
+  TelescopeList.dependsOn(
+      List<Telescope> dependencies,
+      List<T> Function() calculate
+  ) : super.dependsOn(dependencies, calculate,iWillCallNotifyAll: true);
+
+  //TODO add support of on disk to telescope list
+  // TelescopeList.saveOnDisk(
+  //     List<T> items,
+  //     String onDiskId,
+  //     {iWillCallNotifyAll=false}
+  // ) : super.saveOnDisk(items, onDiskId, iWillCallNotifyAll: iWillCallNotifyAll);
 
   void add(T row){ value.add(row); notifyAll(); }
   void addAll(Iterable<T> rows){ value.addAll(rows); notifyAll(); }
