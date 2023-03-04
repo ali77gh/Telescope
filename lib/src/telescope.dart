@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telescope/src/fs/save_and_load.dart';
+import 'package:telescope/src/type_check.dart';
 
 import 'fs/on_disk_savable.dart';
 
@@ -29,13 +30,13 @@ class Telescope<T>{
 
   Telescope.saveOnDisk(this._value, String onDiskId,{this.iWillCallNotifyAll=false}){
 
-    if(_value is! OnDiskSavable && !_isBuiltIn()) {
+    if(_value is! OnDiskSavable && !TypeCheck.isBuiltIn<T>()) {
       throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";
     }
 
     _onDiskId = onDiskId;
 
-    if( _value==null && !_isBuiltIn() ){
+    if( _value==null && !TypeCheck.isBuiltIn<T>() ){
       throw "please pass a non null value to Telescope.saveOnDisk (telescope needs it for deserialization)";
     }
     SaveAndLoad.load<T>(_value, onDiskId, (T loaded) {
@@ -45,7 +46,7 @@ class Telescope<T>{
   }
 
   Telescope(this._value,{this.iWillCallNotifyAll=false}){
-    _checkIsValidType();
+    TypeCheck.checkIsValidType<T>(_value, iWillCallNotifyAll);
   }
 
   void subscribe(Function callback){
@@ -77,7 +78,7 @@ class Telescope<T>{
     }
 
     if(_value==null){
-      _checkIsValidType();
+      TypeCheck.checkIsValidType<T>(_value,iWillCallNotifyAll);
     }
 
     _value = value;
@@ -102,32 +103,6 @@ class Telescope<T>{
         callback(); // this will make State call build in next frame render
       }
     }
-  }
-
-  // type that shared preferences supports
-  bool _isBuiltIn(){
-    return (T == String) ||
-        (T == bool) ||
-        (T == double) ||
-        (T == int);
-  }
-
-  bool _implementsHashCodeProperty(){
-    if(_value == null) return true; // can't check it so we will wait until next value set
-    return _value.hashCode != identityHashCode(_value);
-  }
-
-  bool _checkIsValidType(){
-    if(!iWillCallNotifyAll){
-      if(!_isBuiltIn() && !_implementsHashCodeProperty()){
-        throw "Telescope Error: ${T.toString()} is not implementing OnDiskSavable or hashCode and is not a built-in type(int|string|double|bool)"
-            " so there is no way to detect object changes "
-            "you have two options: "
-            "1. implement hashCode on ${T.toString()} if you can (recommended) "
-            "2. pass iWillCallNotifyAll to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
-      }
-    }
-    return true;
   }
 
 }
