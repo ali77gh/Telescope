@@ -1,11 +1,10 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:telescope/src/fs/save_and_load.dart';
 
-import 'on_disk_savable.dart';
+import 'fs/on_disk_savable.dart';
 
 // TODO make other data structures (map, set,...)
 // TODO add standard docs to functions
-// TODO move disk tools to other file as static function and singleton for pref
 // TODO move type validation to other file as static method to be usable from Telescope list
 
 class Telescope<T>{
@@ -35,32 +34,12 @@ class Telescope<T>{
     }
 
     _onDiskId = onDiskId;
-    SharedPreferences.getInstance().then((pref){
-      if(_value is OnDiskSavable){
 
-        // not assign while its not on disk yet (keeps default value)
-        String? str = pref.getString(onDiskId);
-        if(str != null) {
-          (_value as OnDiskSavable).parseOnDiskString(str);
-        }
-      }else{ // built-in types
-
-        // not assign while its not on disk yet (keeps default value)
-        if(T == String){
-          String? temp = pref.getString(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == int){
-          int? temp = pref.getInt(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == double){
-          double? temp = pref.getDouble(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }else if (T == bool){
-          bool? temp = pref.getBool(onDiskId);
-          if(temp!=null) _value = temp as T;
-        }
-
-      }
+    if( _value==null && !_isBuiltIn() ){
+      throw "please pass a non null value to Telescope.saveOnDisk (telescope needs it for deserialization)";
+    }
+    SaveAndLoad.load<T>(_value, onDiskId, (T loaded) {
+      _value = loaded;
       notifyAll();
     });
   }
@@ -103,27 +82,10 @@ class Telescope<T>{
 
     _value = value;
 
-    // prevents recreate view while data is same as old one
-    // if(getValueHash(_value) == getValueHash(value)) return;
-
     notifyAll();
 
     if(isSavable){
-      SharedPreferences.getInstance().then((pref){
-        if(_value is OnDiskSavable){
-          pref.setString(
-              _onDiskId!, (value as OnDiskSavable).toOnDiskString()
-          ).then((value){});
-        } else if(T == String){
-          pref.setString(_onDiskId!, value as String).then((value){});
-        }else if(T == int){
-          pref.setInt(_onDiskId!, value as int).then((value){});
-        }else if(T == double){
-          pref.setDouble(_onDiskId!, value as double).then((value){});
-        }else if(T == bool){
-          pref.setBool(_onDiskId!, value as bool).then((value){});
-        }
-      });
+      SaveAndLoad.save(_onDiskId!,_value);
     }
   }
 
