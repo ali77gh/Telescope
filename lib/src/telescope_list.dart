@@ -26,14 +26,12 @@ class TelescopeList<T> extends Telescope<List<T>>{
   //     {iWillCallNotifyAll=false}
   // ) : super.saveOnDisk(items, onDiskId, iWillCallNotifyAll: iWillCallNotifyAll);
 
-  // TODO add iterator
-  // TODO check items change on item get with hashCode technic
-
   @override
   set value(List<T> items){
     if(value.isEmpty && items.isNotEmpty){
       TypeCheck.checkIsValidType(items[0], iWillCallNotifyAllForItems);
     }
+    notifyAll();
     super.value = items;
   }
 
@@ -66,7 +64,17 @@ class TelescopeList<T> extends Telescope<List<T>>{
     notifyAll();
   }
 
-  T? operator [](int index) => value[index];
+  T? operator [](int index) {
+    var beforeChangeHash = value[index].hashCode;
+    // push callback to event loop immediately
+    Future.delayed(Duration.zero, (){
+      var afterChangeHash = value[index].hashCode;
+      if(beforeChangeHash != afterChangeHash){
+        notifyAll();
+      }
+    });
+    return value[index];
+  }
 
   void operator []=(int index, T val){ value[index] = val; notifyAll(); }
 
@@ -77,4 +85,5 @@ class TelescopeList<T> extends Telescope<List<T>>{
 
   void sort([int Function(T a, T b)? compare]){ value.sort(compare); notifyAll(); }
   void shuffle([Random? random]){ value.shuffle(random); notifyAll();}
+
 }
