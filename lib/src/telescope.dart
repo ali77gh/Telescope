@@ -6,7 +6,6 @@ import 'fs/on_disk_savable.dart';
 
 // TODO make other data structures (map, set,...)
 // TODO add standard docs to functions
-// TODO move type validation to other file as static method to be usable from Telescope list
 
 class Telescope<T>{
 
