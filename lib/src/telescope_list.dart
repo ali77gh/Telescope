@@ -10,13 +10,13 @@ class TelescopeList<T> extends Telescope<List<T>>{
 
   bool iWillCallNotifyAllForItems = false;
 
-  TelescopeList(List<T> items, {this.iWillCallNotifyAllForItems = false})
+  TelescopeList(List<T> items, { this.iWillCallNotifyAllForItems = false })
       : super(items, iWillCallNotifyAll: true);
 
   TelescopeList.dependsOn(
       List<Telescope> dependencies,
       List<T> Function() calculate,
-      {this.iWillCallNotifyAllForItems=false}
+      { this.iWillCallNotifyAllForItems = false }
   ) : super.dependsOn(dependencies, calculate, iWillCallNotifyAll: true);
 
   //TODO add support of on disk to telescope list
@@ -76,7 +76,10 @@ class TelescopeList<T> extends Telescope<List<T>>{
     return value[index];
   }
 
-  void operator []=(int index, T val){ value[index] = val; notifyAll(); }
+  void operator []=(int index, T val){
+    value[index] = val;
+    notifyAll();
+  }
 
   void remove(T row){ value.remove(row); notifyAll(); }
   void removeAt(int index){ value.removeAt(index); notifyAll(); }

@@ -30,8 +30,6 @@ class ListSampleLayoutState extends State<ListSampleLayout> {
   @override
   Widget build(BuildContext context) {
 
-    // TODO change a row
-
     print("build");
     return Material(
         type: MaterialType.transparency,
@@ -54,10 +52,17 @@ class ListSampleLayoutState extends State<ListSampleLayout> {
                       itemCount: showingItems.watch(this).length,
                       itemBuilder: (context, index) {
                         return Card(
-                            // margin: const EdgeInsets.all(20),
-                            child: Text(
-                                "${index+1}. ${showingItems[index]} (len:${showingItems[index]!.length})",
-                                style: const TextStyle(fontSize: 40),
+                            child: GestureDetector(
+                              onTap: (){
+                                var name = showingItems[index]!;
+                                var itemIndex = items.value.indexOf(name);
+                                items[itemIndex] = "${items[itemIndex]}a";
+                                // items.notifyAll();
+                              },
+                              child: Text(
+                              "${index+1}. ${showingItems[index]} (len:${showingItems[index]!.length})",
+                              style: const TextStyle(fontSize: 40),
+                            ),
                             )
                         );
                       })

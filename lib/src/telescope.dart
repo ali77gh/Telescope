@@ -57,17 +57,25 @@ class Telescope<T>{
     return _value;
   }
 
-
   T get value {
-    var beforeChangeHash = _value.hashCode;
+    var beforeChangeHash = hash(_value);
     // push callback to event loop immediately
     Future.delayed(Duration.zero, (){
-      var afterChangeHash = _value.hashCode;
+      var afterChangeHash = hash(_value);
       if(beforeChangeHash != afterChangeHash){
         notifyAll();
       }
     });
     return _value;
+  }
+
+  int hash(T v){
+    if(v is List){
+        return v.map((i) => i.hashCode)
+            .reduce((value, element) => value * element);
+    } else {
+      return v.hashCode;
+    }
   }
 
   set value(T value){

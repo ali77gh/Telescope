@@ -72,10 +72,3 @@ Telescopes can be depends on other telescopes
     return "weight is ${weight.value} and height is ${height.value} so bmi will be ${bmi.value.toString().substring(0,5)}";
   });
 ```
-
-# TODO
-
-- [ ] telescope list sample
-- [ ] telescope map
-- [ ] telescope set
-- [ ] build in ORM
