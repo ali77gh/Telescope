@@ -10,8 +10,8 @@ class SaveOnDiskSampleLayout extends StatefulWidget {
 class SaveOnDiskSampleLayoutState extends State<SaveOnDiskSampleLayout> {
 
   // observables
-  static var height = Telescope.saveOnDisk(187, "bmi_height_input");
-  static var weight = Telescope.saveOnDisk(70, "bmi_weight_input");
+  static var height = Telescope.saveOnDiskForBuiltInType(187, "bmi_height_input");
+  static var weight = Telescope.saveOnDiskForBuiltInType(70, "bmi_weight_input");
 
   // BMI = (Weight in Kilograms / (Height in Meters x Height in Meters))
   static var bmi = Telescope.dependsOn([height,weight], () {

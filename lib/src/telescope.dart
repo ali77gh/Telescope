@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telescope/src/fs/save_and_load.dart';
 import 'package:telescope/src/type_check.dart';
 
-import 'fs/on_disk_savable.dart';
+import 'fs/on_disk_save_ability.dart';
 
 // TODO make other data structures (map, set,...)
 // TODO add standard docs to functions
@@ -12,10 +12,13 @@ class Telescope<T>{
   late T _value;
   final Set<Function> _callbacks = <Function>{};
 
-  String? _onDiskId;
-  bool get isSavable => _onDiskId != null;
+  bool iWillCallNotifyAll=false;
+
   bool isDependent = false;
-  bool iWillCallNotifyAll;
+
+  String? onDiskId;
+  bool get isSavable => onDiskId != null;
+  OnDiskSaveAbility<T>? onDiskSaveAbility;
 
   Telescope.dependsOn(List<Telescope> dependencies, T Function() calculate,{this.iWillCallNotifyAll=false}){
     _value = calculate();
@@ -27,24 +30,29 @@ class Telescope<T>{
     }
   }
 
-  Telescope.saveOnDisk(this._value, String onDiskId,{this.iWillCallNotifyAll=false}){
+  Telescope.saveOnDiskForBuiltInType(this._value, this.onDiskId){
 
-    if(_value is! OnDiskSavable && !TypeCheck.isBuiltIn<T>()) {
-      throw "${T.toString()} is not implementing OnDiskSavable and is not a built-in type(int|string|double|bool)";
+    if(!TypeCheck.isBuiltIn<T>()) {
+      throw "${T.toString()} is not a built-in type(int|string|double|bool)"
+          " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    _onDiskId = onDiskId;
-
-    if( _value==null && !TypeCheck.isBuiltIn<T>() ){
-      throw "please pass a non null value to Telescope.saveOnDisk (telescope needs it for deserialization)";
-    }
-    SaveAndLoad.load<T>(_value, onDiskId, (T loaded) {
+    SaveAndLoad.load<T>(onDiskSaveAbility, onDiskId!, (T loaded) {
       _value = loaded;
       notifyAll();
     });
   }
 
-  Telescope(this._value,{this.iWillCallNotifyAll=false}){
+  Telescope.saveOnDiskForNonBuiltInType(this._value, this.onDiskId, this.onDiskSaveAbility, { this.iWillCallNotifyAll = false }){
+
+    SaveAndLoad.load<T>(onDiskSaveAbility!, onDiskId!, (T loaded) {
+      _value = loaded;
+      notifyAll();
+    });
+
+  }
+
+  Telescope(this._value, {this.iWillCallNotifyAll=false}){
     TypeCheck.checkIsValidType<T>(_value, iWillCallNotifyAll);
   }
 
@@ -64,6 +72,9 @@ class Telescope<T>{
       var afterChangeHash = hash(_value);
       if(beforeChangeHash != afterChangeHash){
         notifyAll();
+        if(isSavable){
+          SaveAndLoad.save(onDiskId!, _value, onDiskSaveAbility);
+        }
       }
     });
     return _value;
@@ -85,7 +96,7 @@ class Telescope<T>{
     }
 
     if(_value==null){
-      TypeCheck.checkIsValidType<T>(_value,iWillCallNotifyAll);
+      TypeCheck.checkIsValidType<T>(_value, iWillCallNotifyAll);
     }
 
     _value = value;
@@ -93,7 +104,7 @@ class Telescope<T>{
     notifyAll();
 
     if(isSavable){
-      SaveAndLoad.save(_onDiskId!,_value);
+      SaveAndLoad.save(onDiskId!, _value, onDiskSaveAbility);
     }
   }
 

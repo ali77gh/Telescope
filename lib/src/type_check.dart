@@ -20,11 +20,11 @@ class TypeCheck{
 
     if(!iWillCallNotifyAll){
       if(!isBuiltIn<T>() && !implementsHashCodeProperty<T>(value)){
-        throw "Telescope Error: ${T.toString()} is not implementing OnDiskSavable or hashCode and is not a built-in type(int|string|double|bool)"
+        throw "Telescope Error: ${T.toString()} is not implementing hashCode and is not a built-in type(int|string|double|bool)"
             " so there is no way to detect object changes "
             "you have two options: "
             "1. implement hashCode on ${T.toString()} if you can (recommended) "
-            "2. pass iWillCallNotifyAll to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
+            "2. pass iWillCallNotifyAll=true to bypass error and call yourTelescopeObject.notifyAll() everytime you change something on it's value";
       }
     }
     return true;
