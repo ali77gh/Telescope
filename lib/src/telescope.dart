@@ -9,7 +9,8 @@ import 'fs/on_disk_save_ability.dart';
 
 class Telescope<T>{
 
-  late T _value;
+  @protected
+  late T holden;
   final Set<Function> _callbacks = <Function>{};
 
   bool iWillCallNotifyAll=false;
@@ -21,16 +22,16 @@ class Telescope<T>{
   OnDiskSaveAbility<T>? onDiskSaveAbility;
 
   Telescope.dependsOn(List<Telescope> dependencies, T Function() calculate,{this.iWillCallNotifyAll=false}){
-    _value = calculate();
+    holden = calculate();
     for(var o in dependencies){
       o.subscribe((){
-        _value = calculate();
+        holden = calculate();
         notifyAll();
       });
     }
   }
 
-  Telescope.saveOnDiskForBuiltInType(this._value, this.onDiskId){
+  Telescope.saveOnDiskForBuiltInType(this.holden, this.onDiskId){
 
     if(!TypeCheck.isBuiltIn<T>()) {
       throw "${T.toString()} is not a built-in type(int|string|double|bool)"
@@ -38,22 +39,22 @@ class Telescope<T>{
     }
 
     SaveAndLoad.load<T>(onDiskSaveAbility, onDiskId!, (T loaded) {
-      _value = loaded;
+      holden = loaded;
       notifyAll();
     });
   }
 
-  Telescope.saveOnDiskForNonBuiltInType(this._value, this.onDiskId, this.onDiskSaveAbility, { this.iWillCallNotifyAll = false }){
+  Telescope.saveOnDiskForNonBuiltInType(this.holden, this.onDiskId, this.onDiskSaveAbility, { this.iWillCallNotifyAll = false }){
 
     SaveAndLoad.load<T>(onDiskSaveAbility!, onDiskId!, (T loaded) {
-      _value = loaded;
+      holden = loaded;
       notifyAll();
     });
 
   }
 
-  Telescope(this._value, {this.iWillCallNotifyAll=false}){
-    TypeCheck.checkIsValidType<T>(_value, iWillCallNotifyAll);
+  Telescope(this.holden, {this.iWillCallNotifyAll=false}){
+    TypeCheck.checkIsValidType<T>(holden, iWillCallNotifyAll);
   }
 
   void subscribe(Function callback){
@@ -62,31 +63,22 @@ class Telescope<T>{
 
   T watch(State state){
     subscribe(state.setState);
-    return _value;
+    return holden;
   }
 
   T get value {
-    var beforeChangeHash = hash(_value);
+    var beforeChangeHash = holden.hashCode;
     // push callback to event loop immediately
     Future.delayed(Duration.zero, (){
-      var afterChangeHash = hash(_value);
+      var afterChangeHash = holden.hashCode;
       if(beforeChangeHash != afterChangeHash){
         notifyAll();
         if(isSavable){
-          SaveAndLoad.save(onDiskId!, _value, onDiskSaveAbility);
+          SaveAndLoad.save(onDiskId!, holden, onDiskSaveAbility);
         }
       }
     });
-    return _value;
-  }
-
-  int hash(T v){
-    if(v is List){
-        return v.map((i) => i.hashCode)
-            .reduce((value, element) => value * element);
-    } else {
-      return v.hashCode;
-    }
+    return holden;
   }
 
   set value(T value){
@@ -95,16 +87,16 @@ class Telescope<T>{
           "other telescopes and the value can't be set";
     }
 
-    if(_value==null){
-      TypeCheck.checkIsValidType<T>(_value, iWillCallNotifyAll);
+    if(holden==null){
+      TypeCheck.checkIsValidType<T>(holden, iWillCallNotifyAll);
     }
 
-    _value = value;
+    holden = value;
 
     notifyAll();
 
     if(isSavable){
-      SaveAndLoad.save(onDiskId!, _value, onDiskSaveAbility);
+      SaveAndLoad.save(onDiskId!, holden, onDiskSaveAbility);
     }
   }
 

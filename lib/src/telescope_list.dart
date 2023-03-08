@@ -1,8 +1,10 @@
 
 import 'dart:math';
 
+import 'package:telescope/src/fs/on_disk_save_ability.dart';
 import 'package:telescope/src/type_check.dart';
 
+import 'fs/save_and_load.dart';
 import 'telescope.dart';
 
 
@@ -19,12 +21,34 @@ class TelescopeList<T> extends Telescope<List<T>>{
       { this.iWillCallNotifyAllForItems = false }
   ) : super.dependsOn(dependencies, calculate, iWillCallNotifyAll: true);
 
-  //TODO add support of on disk to telescope list
-  // TelescopeList.saveOnDisk(
-  //     List<T> items,
-  //     String onDiskId,
-  //     {iWillCallNotifyAll=false}
-  // ) : super.saveOnDisk(items, onDiskId, iWillCallNotifyAll: iWillCallNotifyAll);
+  TelescopeList.saveOnDiskForBuiltInType(
+      List<T> items,
+      String onDiskId,
+  ) : super(items, iWillCallNotifyAll: true){
+    if(!TypeCheck.isBuiltIn<T>()) {
+      throw "List<${T.toString()}> which ${T.toString()} is not a built-in type(int|string|double|bool)"
+          " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
+    }
+
+    SaveAndLoad.loadList<T>(onDiskId, null, (List<T> loaded) {
+      holden = loaded;
+      notifyAll();
+    });
+  }
+
+  TelescopeList.saveOnDiskForNonBuiltInType(
+      List<T> items,
+      String onDiskId,
+      OnDiskSaveAbility<T>? onDiskSaveAbility,
+      { this.iWillCallNotifyAllForItems = false }
+  ) : super(items, iWillCallNotifyAll: true){
+
+    SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbility!, (List<T> loaded) {
+      holden = loaded;
+      notifyAll();
+    });
+
+  }
 
   @override
   set value(List<T> items){
@@ -32,61 +56,127 @@ class TelescopeList<T> extends Telescope<List<T>>{
       TypeCheck.checkIsValidType(items[0], iWillCallNotifyAllForItems);
     }
     notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
+
     super.value = items;
   }
 
+  @override
+  List<T> get value {
+    var beforeChangeHash = super.holden.map((i)=>i.hashCode).reduce((v, e)=>v*e);
+    // push callback to event loop immediately
+    Future.delayed(Duration.zero, (){
+      var afterChangeHash = holden.map((i)=>i.hashCode).reduce((v, e)=>v*e);
+      if(beforeChangeHash != afterChangeHash){
+        notifyAll();
+        if(isSavable){
+          SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+        }
+      }
+    });
+    return holden;
+  }
+
   void add(T row){
-    if(value.isEmpty){
+    if(holden.isEmpty){
       TypeCheck.checkIsValidType(row, iWillCallNotifyAllForItems);
     }
-    value.add(row);
+    holden.add(row);
     notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
   void addAll(Iterable<T> rows){
-    if(value.isEmpty && rows.isNotEmpty){
+    if(holden.isEmpty && rows.isNotEmpty){
       TypeCheck.checkIsValidType(rows.first, iWillCallNotifyAllForItems);
     }
-    value.addAll(rows);
+    holden.addAll(rows);
     notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
   void insert(int index, T row){
-    if(value.isEmpty){
+    if(holden.isEmpty){
       TypeCheck.checkIsValidType(row, iWillCallNotifyAllForItems);
     }
-    value.insert(index, row);
+    holden.insert(index, row);
     notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
   void insertAll(int index, Iterable<T> rows){
-    if(value.isEmpty && rows.isNotEmpty){
+    if(holden.isEmpty && rows.isNotEmpty){
       TypeCheck.checkIsValidType(rows.first, iWillCallNotifyAllForItems);
     }
-    value.insertAll(index, rows);
+    holden.insertAll(index, rows);
     notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
 
   T? operator [](int index) {
-    var beforeChangeHash = value[index].hashCode;
+    var beforeChangeHash = holden[index].hashCode;
     // push callback to event loop immediately
     Future.delayed(Duration.zero, (){
-      var afterChangeHash = value[index].hashCode;
+      var afterChangeHash = holden[index].hashCode;
       if(beforeChangeHash != afterChangeHash){
         notifyAll();
       }
     });
-    return value[index];
+    return holden[index];
   }
 
   void operator []=(int index, T val){
-    value[index] = val;
+    holden[index] = val;
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
     notifyAll();
   }
 
-  void remove(T row){ value.remove(row); notifyAll(); }
-  void removeAt(int index){ value.removeAt(index); notifyAll(); }
-  void removeWhere(bool Function(T element) test){ value.removeWhere(test); notifyAll(); }
-  void clear(){ value.clear(); notifyAll(); }
+  void remove(T row){
+    holden.remove(row);
+    notifyAll();
 
-  void sort([int Function(T a, T b)? compare]){ value.sort(compare); notifyAll(); }
-  void shuffle([Random? random]){ value.shuffle(random); notifyAll();}
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
+  }
+  void removeAt(int index){ holden.removeAt(index); notifyAll();
+  if(isSavable){
+    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+  }
+  }
+  void removeWhere(bool Function(T element) test){ holden.removeWhere(test); notifyAll();
+  if(isSavable){
+    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+  }
+  }
+
+  void clear(){ holden.clear(); notifyAll();
+
+  if(isSavable){
+    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+  }
+  }
+
+  void sort([int Function(T a, T b)? compare]){ holden.sort(compare); notifyAll();
+
+  if(isSavable){
+    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+  }
+  }
+  void shuffle([Random? random]){ holden.shuffle(random); notifyAll();
+
+  if(isSavable){
+    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+  }
+  }
 
 }
