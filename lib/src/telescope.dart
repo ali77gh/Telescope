@@ -46,6 +46,8 @@ class Telescope<T>{
 
   Telescope.saveOnDiskForNonBuiltInType(this.holden, this.onDiskId, this.onDiskSaveAbility, { this.iWillCallNotifyAll = false }){
 
+    TypeCheck.checkIsValidType(holden, iWillCallNotifyAll);
+
     SaveAndLoad.load<T>(onDiskSaveAbility!, onDiskId!, (T loaded) {
       holden = loaded;
       notifyAll();
