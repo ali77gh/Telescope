@@ -1,4 +1,4 @@
-import 'package:app/04_save_on_disk_sample/save_on_disk_sample.dart';
+import './list_sample_on_disk.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: SaveOnDiskSampleLayout()
+        home: ListSampleOnDiskLayout()
     );
   }
 }
