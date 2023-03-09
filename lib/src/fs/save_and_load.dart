@@ -79,6 +79,7 @@ class SaveAndLoad{
       if(!pref.containsKey(onDiskId)){ return; }
       callback(
           pref.getString(onDiskId)!.split("-$SEP").map((i){
+            i = i.replaceAll("\\$SEP", SEP);
             switch(T){
               case bool: return (i == "true") as T;
               case int: return (int.parse(i)) as T;
