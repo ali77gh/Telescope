@@ -25,6 +25,7 @@ class TelescopeList<T> extends Telescope<List<T>>{
       List<T> items,
       String onDiskId,
   ) : super(items, iWillCallNotifyAll: true){
+    super.onDiskId = onDiskId;
     if(!TypeCheck.isBuiltIn<T>()) {
       throw "List<${T.toString()}> which ${T.toString()} is not a built-in type(int|string|double|bool)"
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
@@ -43,11 +44,11 @@ class TelescopeList<T> extends Telescope<List<T>>{
       { this.iWillCallNotifyAllForItems = false }
   ) : super(items, iWillCallNotifyAll: true){
 
+    super.onDiskId = onDiskId;
     SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbility!, (List<T> loaded) {
       holden = loaded;
       notifyAll();
     });
-
   }
 
   @override
@@ -65,7 +66,7 @@ class TelescopeList<T> extends Telescope<List<T>>{
 
   @override
   List<T> get value {
-    var beforeChangeHash = super.holden.map((i)=>i.hashCode).reduce((v, e)=>v*e);
+    var beforeChangeHash = holden.map((i)=>i.hashCode).reduce((v, e)=>v*e);
     // push callback to event loop immediately
     Future.delayed(Duration.zero, (){
       var afterChangeHash = holden.map((i)=>i.hashCode).reduce((v, e)=>v*e);
@@ -89,6 +90,7 @@ class TelescopeList<T> extends Telescope<List<T>>{
       SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
     }
   }
+
   void addAll(Iterable<T> rows){
     if(holden.isEmpty && rows.isNotEmpty){
       TypeCheck.checkIsValidType(rows.first, iWillCallNotifyAllForItems);
@@ -99,6 +101,7 @@ class TelescopeList<T> extends Telescope<List<T>>{
       SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
     }
   }
+
   void insert(int index, T row){
     if(holden.isEmpty){
       TypeCheck.checkIsValidType(row, iWillCallNotifyAllForItems);
@@ -109,6 +112,7 @@ class TelescopeList<T> extends Telescope<List<T>>{
       SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
     }
   }
+
   void insertAll(int index, Iterable<T> rows){
     if(holden.isEmpty && rows.isNotEmpty){
       TypeCheck.checkIsValidType(rows.first, iWillCallNotifyAllForItems);
@@ -127,6 +131,9 @@ class TelescopeList<T> extends Telescope<List<T>>{
       var afterChangeHash = holden[index].hashCode;
       if(beforeChangeHash != afterChangeHash){
         notifyAll();
+        if(isSavable){
+          SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+        }
       }
     });
     return holden[index];
@@ -148,35 +155,45 @@ class TelescopeList<T> extends Telescope<List<T>>{
       SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
     }
   }
-  void removeAt(int index){ holden.removeAt(index); notifyAll();
-  if(isSavable){
-    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
-  }
-  }
-  void removeWhere(bool Function(T element) test){ holden.removeWhere(test); notifyAll();
-  if(isSavable){
-    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
-  }
+
+  void removeAt(int index){
+    holden.removeAt(index);
+    notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
 
-  void clear(){ holden.clear(); notifyAll();
-
-  if(isSavable){
-    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
-  }
-  }
-
-  void sort([int Function(T a, T b)? compare]){ holden.sort(compare); notifyAll();
-
-  if(isSavable){
-    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
-  }
-  }
-  void shuffle([Random? random]){ holden.shuffle(random); notifyAll();
-
-  if(isSavable){
-    SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
-  }
+  void removeWhere(bool Function(T element) test){
+    holden.removeWhere(test);
+    notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
   }
 
+  void clear(){
+    holden.clear();
+    notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
+  }
+
+  void sort([int Function(T a, T b)? compare]){
+    holden.sort(compare);
+    notifyAll();
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
+  }
+
+  void shuffle([Random? random]){
+    holden.shuffle(random);
+    notifyAll();
+
+    if(isSavable){
+      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbility);
+    }
+  }
 }
