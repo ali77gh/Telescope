@@ -1,6 +1,4 @@
 
-
-
 class TypeCheck{
 
   // type that shared preferences supports

@@ -4,11 +4,12 @@ import 'package:telescope/src/type_check.dart';
 
 import 'fs/on_disk_save_ability.dart';
 
-// TODO make other data structures (map, set,...)
-// TODO add standard docs to functions
-
+/// Observable pattern witch can call setState of your States
+///   and also have on disk save and depends on
+///   [T] should be built in type or implements int hashCode getter
 class Telescope<T>{
 
+  /// don't touch [holden] use [value] instead
   @protected
   late T holden;
   final Set<Function> _callbacks = <Function>{};
@@ -21,6 +22,16 @@ class Telescope<T>{
   bool get isSavable => onDiskId != null;
   OnDiskSaveAbility<T>? onDiskSaveAbility;
 
+  /// main constructor without on disk save or depends on
+  /// [T] should be built in type or implements int hashCode getter otherwise you should pass [iWillCallNotifyAll]=true to bypass error and call notifyAll after any changes to take effect
+  Telescope(this.holden, {this.iWillCallNotifyAll=false}){
+    TypeCheck.checkIsValidType<T>(holden, iWillCallNotifyAll);
+  }
+
+  /// depends on is type of telescope object that can depend on other telescope objects
+  /// and will update itself when dependencies get changes
+  /// [dependencies] are list of telescopes that this telescope is depend on.
+  /// [calculate] will call when ever dependencies get change
   Telescope.dependsOn(List<Telescope> dependencies, T Function() calculate,{this.iWillCallNotifyAll=false}){
     holden = calculate();
     for(var o in dependencies){
@@ -31,6 +42,8 @@ class Telescope<T>{
     }
   }
 
+  /// you can save built in type easily on disk by using this constructor
+  /// [onDiskId] should be unique id.
   Telescope.saveOnDiskForBuiltInType(this.holden, this.onDiskId){
 
     if(!TypeCheck.isBuiltIn<T>()) {
@@ -44,6 +57,10 @@ class Telescope<T>{
     });
   }
 
+  /// you can save non built in type on disk by using this constructor
+  /// [onDiskId] should be unique id.
+  /// [onDiskSaveAbility] used for serialize and deserialize your object to string before saving and after loading.
+  /// [T] should be built in type or implements int hashCode getter otherwise you should pass [iWillCallNotifyAll]=true to bypass error and call notifyAll after any changes to take effect
   Telescope.saveOnDiskForNonBuiltInType(this.holden, this.onDiskId, this.onDiskSaveAbility, { this.iWillCallNotifyAll = false }){
 
     TypeCheck.checkIsValidType(holden, iWillCallNotifyAll);
@@ -55,19 +72,21 @@ class Telescope<T>{
 
   }
 
-  Telescope(this.holden, {this.iWillCallNotifyAll=false}){
-    TypeCheck.checkIsValidType<T>(holden, iWillCallNotifyAll);
-  }
-
+  /// [callback] will call when ever value get change
   void subscribe(Function callback){
     _callbacks.add(callback);
   }
 
+  /// [state] will rebuild on value change
+  /// and this function also returns value to use it on build function.
   T watch(State state){
     subscribe(state.setState);
     return holden;
   }
 
+  /// Returns value of telescope
+  /// Will call [notifyAll] after change detected by hashcode
+  /// You can use holden if you don't need hashCode and change detection
   T get value {
     var beforeChangeHash = holden.hashCode;
     // push callback to event loop immediately
@@ -83,6 +102,7 @@ class Telescope<T>{
     return holden;
   }
 
+  /// will set value and call [notifyAll]
   set value(T value){
     if(isDependent) {
       throw "this telescope is dependent on "
@@ -102,6 +122,7 @@ class Telescope<T>{
     }
   }
 
+  /// this will call build on every watchers and call all callback functions.
   void notifyAll(){
     for(Function callback in _callbacks){
       if(callback is Function(VoidCallback)){
