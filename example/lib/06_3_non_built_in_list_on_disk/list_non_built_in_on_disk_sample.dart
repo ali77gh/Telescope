@@ -13,7 +13,6 @@ class Contact{
 class ContactOnDiskAbility implements OnDiskSaveAbility<Contact>{
   @override
   Contact parseOnDiskString(String data) {
-    print("parse: $data");
     var sp = data.split(":");
     return Contact(sp[0], sp[1]);
   }
