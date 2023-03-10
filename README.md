@@ -13,6 +13,15 @@ Telescope tries to be:
    2. No setState() needed.
 5. Performance (just rebuild widgets that need to rebuild).
 
+### Installation
+```bash
+flutter pub add telescope
+```
+
+### Import:
+```dart
+import 'package:telescope/telescope.dart';
+```
 
 # How to use
 In 3 easy steps.
@@ -137,4 +146,5 @@ This  method also can use in TelescopeList in same way.
 # Examples
    Checkout telescope/examples 
 
-# License GPL3
+# License
+GPL version 3
