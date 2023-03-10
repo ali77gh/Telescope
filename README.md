@@ -1,17 +1,18 @@
 # Telescope
 <img src="telescope.png"> <br>
-Just another state manager for flutter based on observable design pattern.
+Just another state manager for flutter based on observable:eyes: design pattern.
 
-Telescope tries to be:
-1. Easy to learn (You can learn it in 5-10 min by reading README.md file).
-2. Easy to use (with dependsOn and saveOnDisk features).
-3. Flexible 
-   1. Can be used beside other state managers.
-   2. It lets you do it in your way.
-4. Make it harder to make bugs
-   1. With separation of concerns.
-   2. No setState() needed.
-5. Performance (just rebuild widgets that need to rebuild).
+Telescope:telescope: tries to be:
+1. Easy to learn:book: (You can learn it in 5-10 min by reading README.md file).
+2. Easy to use:hearts: (with dependsOn and saveOnDisk features).
+3. Flexible:ocean:
+   1. Can be used beside other state managers:couple:.
+   2. It lets you do it in your way:muscle:.
+4. Make it harder to make bugs:beetle::no_entry:.
+   1. With separation of concerns:raised_hands:.
+   2. No setState() needed:no_good:.
+5. Performance:zap: (just rebuild widgets that need to rebuild).
+6. Lightweight:hatched_chick: (less then 900KB)
 
 ### Installation
 ```bash
