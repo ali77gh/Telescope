@@ -1,7 +1,7 @@
 name: telescope
-description: A better state manager.
-version: 0.0.1
-homepage:
+description: A simple and easy to use state manager for flutter.
+version: 1.0.0
+repository: https://github.com/ali77gh/Telescope
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -22,7 +22,14 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  plugin:
+    platforms:
+      linux:
+      windows:
+      macos:
+      android:
+      web:
+      ios:
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
