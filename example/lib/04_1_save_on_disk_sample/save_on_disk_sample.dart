@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
+import 'package:telescope/telescope.dart';
 
 
 class SaveOnDiskSampleLayout extends StatefulWidget {
+  const SaveOnDiskSampleLayout({Key? key}) : super(key: key);
+
   @override
   State<SaveOnDiskSampleLayout> createState() => SaveOnDiskSampleLayoutState();
 }
@@ -26,7 +28,6 @@ class SaveOnDiskSampleLayoutState extends State<SaveOnDiskSampleLayout> {
   Widget build(BuildContext context) {
 
     var style = const TextStyle(fontSize: 40);
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

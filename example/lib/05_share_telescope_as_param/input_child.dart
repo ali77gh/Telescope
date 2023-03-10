@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
+import 'package:telescope/telescope.dart';
 
 class InputLayout extends StatefulWidget {
 
-  Telescope<String> text;
-  InputLayout(this.text);
+  final Telescope<String> text;
+  const InputLayout(this.text, {Key? key}) : super(key: key);
 
   @override
   State<InputLayout> createState() => InputLayoutState();
@@ -14,8 +14,6 @@ class InputLayoutState extends State<InputLayout> {
 
   @override
   Widget build(BuildContext context) {
-
-    print("input build");
     return TextField(
       controller: TextEditingController(text: ""),
       onChanged: (content){

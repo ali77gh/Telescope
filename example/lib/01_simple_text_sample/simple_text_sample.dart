@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
+import 'package:telescope/telescope.dart';
 
 
 class TextSample extends StatefulWidget {
+  const TextSample({Key? key}) : super(key: key);
 
   @override
   State<TextSample> createState() => TextSampleState();
@@ -16,7 +17,6 @@ class TextSampleState extends State<TextSample> {
   Widget build(BuildContext context) {
 
     var style = const TextStyle(fontSize: 60);
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

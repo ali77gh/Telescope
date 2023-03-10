@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
+import 'package:telescope/telescope.dart';
 
 
 class DependObservableSampleLayout extends StatefulWidget {
+  const DependObservableSampleLayout({Key? key}) : super(key: key);
+
   @override
   State<DependObservableSampleLayout> createState() => DependObservableSampleLayoutState();
 }
@@ -35,7 +37,6 @@ class DependObservableSampleLayoutState extends State<DependObservableSampleLayo
   Widget build(BuildContext context) {
 
     var style = const TextStyle(fontSize: 40);
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

@@ -8,6 +8,9 @@ class Human{
 
   @override
   int get hashCode => height*weight;
+
+  @override
+  bool operator ==(Object other) => hashCode==other.hashCode;
 }
 class HumanOnDiskAbility implements OnDiskSaveAbility<Human>{
   @override
@@ -22,6 +25,8 @@ class HumanOnDiskAbility implements OnDiskSaveAbility<Human>{
 
 
 class SaveNonBuiltInOnDiskSampleLayout extends StatefulWidget {
+  const SaveNonBuiltInOnDiskSampleLayout({Key? key}) : super(key: key);
+
   @override
   State<SaveNonBuiltInOnDiskSampleLayout> createState() => SaveNonBuiltInOnDiskSampleLayoutState();
 }
@@ -44,7 +49,6 @@ class SaveNonBuiltInOnDiskSampleLayoutState extends State<SaveNonBuiltInOnDiskSa
   Widget build(BuildContext context) {
 
     var style = const TextStyle(fontSize: 40);
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

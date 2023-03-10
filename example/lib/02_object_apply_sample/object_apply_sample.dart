@@ -1,9 +1,10 @@
 import 'package:app/02_object_apply_sample/main.dart';
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
+import 'package:telescope/telescope.dart';
 
 
 class ObjectApplySampleLayout extends StatefulWidget {
+  const ObjectApplySampleLayout({Key? key}) : super(key: key);
 
   @override
   State<ObjectApplySampleLayout> createState() => ObjectApplySampleLayoutState();
@@ -15,8 +16,6 @@ class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
 
   @override
   Widget build(BuildContext context) {
-
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

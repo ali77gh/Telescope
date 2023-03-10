@@ -129,9 +129,7 @@ class Telescope<T>{
         try{
           // it may crash while widget is not mounted
           callback((){});
-        } catch(e) {
-          print(e);
-        }
+        } catch(e) {/*ignore*/}
       }else{
         callback(); // this will make State call build in next frame render
       }

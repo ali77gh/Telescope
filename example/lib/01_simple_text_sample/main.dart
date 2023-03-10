@@ -1,13 +1,13 @@
-import 'dart:async';
 
 import 'package:app/01_simple_text_sample/simple_text_sample.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: TextSample()
+        home: const TextSample()
     );
   }
 }

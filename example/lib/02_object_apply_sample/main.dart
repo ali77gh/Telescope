@@ -14,13 +14,17 @@ class Human{
 
   @override
   int get hashCode => (name.hashCode) * age.hashCode;
+
+  @override
+  bool operator ==(Object other) => hashCode==other.hashCode;
 }
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: ObjectApplySampleLayout()
+        home: const ObjectApplySampleLayout()
     );
   }
 }

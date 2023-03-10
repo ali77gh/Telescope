@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
 import 'package:telescope/telescope.dart';
 
 class Contact{
@@ -9,6 +8,9 @@ class Contact{
 
   @override
   int get hashCode => name.hashCode * phone.hashCode;
+
+  @override
+  bool operator ==(Object other)=> hashCode==other.hashCode;
 }
 class ContactOnDiskAbility implements OnDiskSaveAbility<Contact>{
   @override
@@ -22,6 +24,8 @@ class ContactOnDiskAbility implements OnDiskSaveAbility<Contact>{
 }
 
 class ListNonBuiltInOnDiskSample extends StatefulWidget {
+  const ListNonBuiltInOnDiskSample({Key? key}) : super(key: key);
+
   @override
   State<ListNonBuiltInOnDiskSample > createState() => ListNonBuiltInOnDiskSampleState();
 }
@@ -50,8 +54,6 @@ class ListNonBuiltInOnDiskSampleState extends State<ListNonBuiltInOnDiskSample> 
 
   @override
   Widget build(BuildContext context) {
-
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

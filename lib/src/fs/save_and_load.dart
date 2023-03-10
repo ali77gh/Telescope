@@ -5,11 +5,11 @@ import 'on_disk_save_ability.dart';
 
 class SaveAndLoad{
 
-  static const String PREFIX = "TELESCOPE_";
+  static const String prefix = "TELESCOPE_";
 
   static save<T>(String onDiskId, T value, OnDiskSaveAbility<T>? onDiskSaveAbility){
 
-    onDiskId += PREFIX;
+    onDiskId += prefix;
 
     SharedPreferences.getInstance().then((pref){
       switch(T){
@@ -29,7 +29,7 @@ class SaveAndLoad{
 
   static load<T>(OnDiskSaveAbility<T>? onDiskSaveAbility, String onDiskId, void Function(T loaded) callback){
 
-    onDiskId += PREFIX;
+    onDiskId += prefix;
     SharedPreferences.getInstance().then((pref){
 
       // not assign while its not on disk yet (keeps default value)
@@ -52,10 +52,10 @@ class SaveAndLoad{
 
   // list save and load
 
-  static const String SEP = '~';
+  static const String sep = '~';
   static saveList<T>(String onDiskId, List<T> items, OnDiskSaveAbility<T>? onDiskSaveAbility){
 
-    onDiskId += PREFIX;
+    onDiskId += prefix;
 
     var stringifies = items.map((i){
       var itemString = "";
@@ -64,8 +64,8 @@ class SaveAndLoad{
       }else{
         itemString = i.toString();
       }
-      return itemString.replaceAll(SEP, "\\$SEP");
-    }).join("-$SEP");
+      return itemString.replaceAll(sep, "\\$sep");
+    }).join("-$sep");
     SharedPreferences.getInstance().then((pref){
       pref.setString(onDiskId, stringifies).then((value){});
     });
@@ -73,13 +73,13 @@ class SaveAndLoad{
 
   static loadList<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility, void Function(List<T> loaded) callback){
 
-    onDiskId += PREFIX;
+    onDiskId += prefix;
 
     SharedPreferences.getInstance().then((pref){
       if(!pref.containsKey(onDiskId)){ return; }
       callback(
-          pref.getString(onDiskId)!.split("-$SEP").map((i){
-            i = i.replaceAll("\\$SEP", SEP);
+          pref.getString(onDiskId)!.split("-$sep").map((i){
+            i = i.replaceAll("\\$sep", sep);
             switch(T){
               case bool: return (i == "true") as T;
               case int: return (int.parse(i)) as T;

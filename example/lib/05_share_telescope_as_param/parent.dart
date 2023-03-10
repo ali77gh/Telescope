@@ -5,6 +5,8 @@ import 'package:telescope/telescope.dart';
 
 
 class ParentLayout extends StatefulWidget {
+  const ParentLayout({Key? key}) : super(key: key);
+
   @override
   State<ParentLayout> createState() => ParentLayoutState();
 }
@@ -15,8 +17,6 @@ class ParentLayoutState extends State<ParentLayout> {
 
   @override
   Widget build(BuildContext context) {
-
-    print("parent build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(

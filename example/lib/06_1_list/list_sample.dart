@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:telescope/src/telescope.dart';
 import 'package:telescope/telescope.dart';
 import 'dart:math';
 
 
 class ListSampleLayout extends StatefulWidget {
+  const ListSampleLayout({Key? key}) : super(key: key);
+
   @override
   State<ListSampleLayout> createState() => ListSampleLayoutState();
 }
@@ -30,7 +31,6 @@ class ListSampleLayoutState extends State<ListSampleLayout> {
   @override
   Widget build(BuildContext context) {
 
-    print("build");
     return Material(
         type: MaterialType.transparency,
         child: SafeArea(
