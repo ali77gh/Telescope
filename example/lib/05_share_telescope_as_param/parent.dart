@@ -3,7 +3,6 @@ import 'package:app/05_share_telescope_as_param/output_child.dart';
 import 'package:flutter/material.dart';
 import 'package:telescope/telescope.dart';
 
-
 class ParentLayout extends StatefulWidget {
   const ParentLayout({Key? key}) : super(key: key);
 
@@ -12,7 +11,6 @@ class ParentLayout extends StatefulWidget {
 }
 
 class ParentLayoutState extends State<ParentLayout> {
-
   var text = Telescope<String>("");
 
   @override
@@ -21,13 +19,13 @@ class ParentLayoutState extends State<ParentLayout> {
         type: MaterialType.transparency,
         child: SafeArea(
             child: Container(
-              color: Colors.white,
-              child: Column(children: [
-                InputLayout(text),
-                OutputLayout(text),
-              ],),
-            )
-        )
-    );
+          color: Colors.white,
+          child: Column(
+            children: [
+              InputLayout(text),
+              OutputLayout(text),
+            ],
+          ),
+        )));
   }
 }

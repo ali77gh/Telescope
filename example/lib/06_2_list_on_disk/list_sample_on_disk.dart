@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:telescope/telescope.dart';
 import 'dart:math';
 
-
 class ListSampleOnDiskLayout extends StatefulWidget {
   const ListSampleOnDiskLayout({Key? key}) : super(key: key);
 
   @override
-  State<ListSampleOnDiskLayout > createState() => ListSampleOnDiskLayoutState();
+  State<ListSampleOnDiskLayout> createState() => ListSampleOnDiskLayoutState();
 }
 
-class ListSampleOnDiskLayoutState extends State<ListSampleOnDiskLayout > {
-
+class ListSampleOnDiskLayoutState extends State<ListSampleOnDiskLayout> {
   late Telescope<String> searchText;
   late TelescopeList<String> items;
   late TelescopeList<String> showingItems;
   late TextEditingController textController = TextEditingController(text: "");
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     searchText = Telescope<String>("");
-    items = TelescopeList<String>.saveOnDiskForBuiltInType(["ab", "abb", "bc", "bcc" , "c"], "items");
+    items = TelescopeList<String>.saveOnDiskForBuiltInType(
+        ["ab", "abb", "bc", "bcc", "c"], "items");
 
-    showingItems = TelescopeList.dependsOn([items, searchText],(){
-        return items.value.where((element) => element.contains(searchText.value)).toList();
+    showingItems = TelescopeList.dependsOn([items, searchText], () {
+      return items.value
+          .where((element) => element.contains(searchText.value))
+          .toList();
     });
   }
 
@@ -34,50 +35,47 @@ class ListSampleOnDiskLayoutState extends State<ListSampleOnDiskLayout > {
         type: MaterialType.transparency,
         child: SafeArea(
             child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(hintText: 'search'),
-                    controller: textController,
-                    style: const TextStyle(fontSize: 50),
-                    onChanged: (content){
-                      searchText.value = content;
-                    },
-                  ),
-                  Expanded(
-                      child: ListView.builder(
+          color: Colors.white,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              TextField(
+                decoration: const InputDecoration(hintText: 'search'),
+                controller: textController,
+                style: const TextStyle(fontSize: 50),
+                onChanged: (content) {
+                  searchText.value = content;
+                },
+              ),
+              Expanded(
+                  child: ListView.builder(
                       itemCount: showingItems.watch(this).length,
                       itemBuilder: (context, index) {
                         return Card(
                             child: GestureDetector(
-                              onTap: (){
-                                var name = showingItems[index]!;
-                                var itemIndex = items.value.indexOf(name);
-                                items[itemIndex] = "${items[itemIndex]}a";
-                                // items.notifyAll();
-                              },
-                              child: Text(
-                              "${index+1}. ${showingItems[index]} (len:${showingItems[index]!.length})",
-                              style: const TextStyle(fontSize: 40),
-                            ),
-                            )
-                        );
-                      })
-                  ),
-                  FloatingActionButton(
-                      onPressed: (){ items.add(randomText()); },
-                      child: const Text("Add"))
-                ],
-              ),
-            )
-        )
-    );
-
+                          onTap: () {
+                            var name = showingItems[index]!;
+                            var itemIndex = items.value.indexOf(name);
+                            items[itemIndex] = "${items[itemIndex]}a";
+                            // items.notifyAll();
+                          },
+                          child: Text(
+                            "${index + 1}. ${showingItems[index]} (len:${showingItems[index]!.length})",
+                            style: const TextStyle(fontSize: 40),
+                          ),
+                        ));
+                      })),
+              FloatingActionButton(
+                  onPressed: () {
+                    items.add(randomText());
+                  },
+                  child: const Text("Add"))
+            ],
+          ),
+        )));
   }
+
   final _chars = 'abcdefg';
   String randomText() => String.fromCharCodes(Iterable.generate(
-      5, (_) => _chars.codeUnitAt(Random().nextInt(_chars.length))
-  ));
+      5, (_) => _chars.codeUnitAt(Random().nextInt(_chars.length))));
 }

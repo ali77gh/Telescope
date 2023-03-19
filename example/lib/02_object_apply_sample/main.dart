@@ -1,14 +1,13 @@
-
 import 'package:app/02_object_apply_sample/object_apply_sample.dart';
 import 'package:flutter/material.dart';
 
-class Human{
+class Human {
   String name;
   int age;
   Human(this.name, this.age);
 
   @override
-  String toString(){
+  String toString() {
     return "$name is $age years old.";
   }
 
@@ -16,7 +15,7 @@ class Human{
   int get hashCode => (name.hashCode) * age.hashCode;
 
   @override
-  bool operator ==(Object other) => hashCode==other.hashCode;
+  bool operator ==(Object other) => hashCode == other.hashCode;
 }
 
 void main() {
@@ -28,11 +27,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: const ObjectApplySampleLayout()
-    );
+        home: const ObjectApplySampleLayout());
   }
 }

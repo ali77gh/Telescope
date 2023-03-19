@@ -1,4 +1,3 @@
-
 import 'package:app/01_simple_text_sample/simple_text_sample.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: const TextSample()
-    );
+        home: const TextSample());
   }
 }

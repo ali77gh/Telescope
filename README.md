@@ -1,5 +1,5 @@
 # Telescope
-<img src="telescope.png"> <br>
+<img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png"> <br>
 Just another state manager for flutter based on observable:eyes: design pattern.
 
 Telescope:telescope: tries to be:
@@ -65,7 +65,7 @@ onTap: (){
 ### Boom:
 And state will get update automatically without calling setState
 
-<img src="telescope.gif"> <br>
+<img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.gif"> <br>
 
 # Other features:
 
