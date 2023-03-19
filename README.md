@@ -1,5 +1,5 @@
 # Telescope
-<img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png"> <br>
+<img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png" height="200" width="200"> <br>
 Just another state manager for flutter based on observable:eyes: design pattern.
 
 Telescope:telescope: tries to be:
