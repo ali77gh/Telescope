@@ -79,6 +79,7 @@ class Telescope<T> {
   /// [state] will rebuild on value change
   /// and this function also returns value to use it on build function.
   T watch(State state) {
+    // ignore: invalid_use_of_protected_member
     subscribe(state.setState);
     return holden;
   }

@@ -5,8 +5,9 @@ class TypeCheck {
   }
 
   static bool implementsHashCodeProperty<T>(T value) {
-    if (value == null)
-      return true; // can't check it so we will wait until next value set
+    if (value == null) {
+      return true;
+    } // can't check it so we will wait until next value set
     return value.hashCode != identityHashCode(value);
   }
 
