@@ -37,9 +37,11 @@ class TelescopeList<T> extends Telescope<List<T>> {
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    SaveAndLoad.loadList<T>(onDiskId, null, (List<T> loaded) {
-      holden = loaded;
-      notifyAll();
+    SaveAndLoad.loadList<T>(onDiskId, null).then((loaded){
+      if(loaded!=null){
+        holden = loaded;
+        notifyAll();
+      }
     });
   }
 
@@ -53,10 +55,12 @@ class TelescopeList<T> extends Telescope<List<T>> {
       : super(items, iWillCallNotifyAll: true) {
     TypeCheck.checkIsValidTypeForItems(items, iWillCallNotifyAllForItems);
     super.onDiskId = onDiskId;
-    SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbilityForItems,
-        (List<T> loaded) {
-      holden = loaded;
-      notifyAll();
+
+    SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbilityForItems).then((loaded){
+      if(loaded!=null){
+        holden = loaded;
+        notifyAll();
+      }
     });
   }
 
@@ -66,7 +70,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     TypeCheck.checkIsValidTypeForItems(items, iWillCallNotifyAllForItems);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
 
     super.holden = items;
@@ -91,7 +95,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
         }
         notifyAll();
         if (isSavable) {
-          SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+          SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
         }
       }
     });
@@ -106,7 +110,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.add(row);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -118,7 +122,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.addAll(rows);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -130,7 +134,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.insert(index, row);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -142,7 +146,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.insertAll(index, rows);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -160,7 +164,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
         }
         notifyAll();
         if (isSavable) {
-          SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+          SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
         }
       }
     });
@@ -172,7 +176,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     //no need to check type because if list[0]=2 is happening then list[0] is already checked
     holden[index] = val;
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
     notifyAll();
   }
@@ -183,7 +187,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     notifyAll();
 
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -192,7 +196,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.removeAt(index);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -201,7 +205,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.removeWhere(test);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -210,7 +214,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.clear();
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -219,7 +223,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     holden.sort(compare);
     notifyAll();
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 
@@ -229,7 +233,7 @@ class TelescopeList<T> extends Telescope<List<T>> {
     notifyAll();
 
     if (isSavable) {
-      SaveAndLoad.saveList(onDiskId!, holden, onDiskSaveAbilityForItems);
+      SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
   }
 }

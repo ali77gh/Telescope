@@ -50,9 +50,11 @@ class Telescope<T> {
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    SaveAndLoad.load<T>(onDiskSaveAbility, onDiskId!, (T loaded) {
-      holden = loaded;
-      notifyAll();
+    SaveAndLoad.load<T>(onDiskId!, onDiskSaveAbility!).then((loaded){
+      if(loaded!=null){
+        holden = loaded;
+        notifyAll();
+      }
     });
   }
 
@@ -65,10 +67,13 @@ class Telescope<T> {
       {this.iWillCallNotifyAll = false}) {
     TypeCheck.checkIsValidType(holden, iWillCallNotifyAll);
 
-    SaveAndLoad.load<T>(onDiskSaveAbility!, onDiskId!, (T loaded) {
-      holden = loaded;
-      notifyAll();
+    SaveAndLoad.load(onDiskId!, onDiskSaveAbility!).then((loaded){
+      if(loaded != null){
+        holden = loaded;
+        notifyAll();
+      }
     });
+
   }
 
   /// [callback] will call when ever value get change
@@ -95,7 +100,7 @@ class Telescope<T> {
       if (beforeChangeHash != afterChangeHash) {
         notifyAll();
         if (isSavable) {
-          SaveAndLoad.save(onDiskId!, holden, onDiskSaveAbility);
+          SaveAndLoad.save(onDiskId!, onDiskSaveAbility, holden);
         }
       }
     });
@@ -118,7 +123,7 @@ class Telescope<T> {
     notifyAll();
 
     if (isSavable) {
-      SaveAndLoad.save(onDiskId!, holden, onDiskSaveAbility);
+      SaveAndLoad.save(onDiskId!, onDiskSaveAbility, holden);
     }
   }
 

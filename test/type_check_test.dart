@@ -3,6 +3,8 @@ import 'package:telescope/src/telescope.dart';
 import 'package:telescope/src/type_check.dart';
 import 'package:test/test.dart';
 
+// Unit tests are here
+// Integration tests are in /examples
 
 void main(){
   typeCheckBuiltIn();
