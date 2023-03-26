@@ -50,7 +50,7 @@ class Telescope<T> {
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    SaveAndLoad.load<T>(onDiskId!, onDiskSaveAbility!).then((loaded){
+    SaveAndLoad.load<T>(onDiskId!, onDiskSaveAbility).then((loaded){
       if(loaded!=null){
         holden = loaded;
         notifyAll();
