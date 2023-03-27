@@ -1,4 +1,3 @@
-import 'package:app/02_object_apply_sample/main.dart';
 import 'package:flutter/material.dart';
 import 'package:telescope/telescope.dart';
 
@@ -11,7 +10,7 @@ class ObjectApplySampleLayout extends StatefulWidget {
 }
 
 class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
-  var human = Telescope<Human>(Human("Ali", 23));
+  var human = Telescope<Human>(Human("Ali", 24));
 
   @override
   Widget build(BuildContext context) {
@@ -35,4 +34,20 @@ class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
           ),
         )));
   }
+}
+class Human {
+  String name;
+  int age;
+  Human(this.name, this.age);
+
+  @override
+  String toString() {
+    return "$name is $age years old.";
+  }
+
+  @override
+  int get hashCode => (name.hashCode) * age.hashCode;
+
+  @override
+  bool operator ==(Object other) => hashCode == other.hashCode;
 }

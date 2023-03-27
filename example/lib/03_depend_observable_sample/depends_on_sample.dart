@@ -40,44 +40,44 @@ class DependObservableSampleLayoutState
         type: MaterialType.transparency,
         child: SafeArea(
             child: Container(
-          color: Colors.white,
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                "Weight(kg):",
-                style: style,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    "Weight(kg):",
+                    style: style,
+                  ),
+                  Slider(
+                      value: weight.watch(this).toDouble(),
+                      min: 1,
+                      max: 200,
+                      label: weight.watch(this).round().toString(),
+                      onChanged: (double value) {
+                        weight.value = value.toInt();
+                      }),
+                  Text(
+                    "Height(cm):",
+                    style: style,
+                  ),
+                  Slider(
+                      value: height.watch(this).toDouble(),
+                      min: 1,
+                      max: 200,
+                      label: height.watch(this).round().toString(),
+                      onChanged: (double value) {
+                        height.value = value.toInt();
+                      }),
+                  Text(
+                    "Result:",
+                    style: style,
+                  ),
+                  Text(
+                    showingText.watch(this),
+                    style: style,
+                  ),
+                ],
               ),
-              Slider(
-                  value: weight.watch(this).toDouble(),
-                  min: 1,
-                  max: 200,
-                  label: weight.watch(this).round().toString(),
-                  onChanged: (double value) {
-                    weight.value = value.toInt();
-                  }),
-              Text(
-                "Height(cm):",
-                style: style,
-              ),
-              Slider(
-                  value: height.watch(this).toDouble(),
-                  min: 1,
-                  max: 200,
-                  label: height.watch(this).round().toString(),
-                  onChanged: (double value) {
-                    height.value = value.toInt();
-                  }),
-              Text(
-                "Result:",
-                style: style,
-              ),
-              Text(
-                showingText.watch(this),
-                style: style,
-              ),
-            ],
-          ),
-        )));
+            )));
   }
 }
