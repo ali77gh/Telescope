@@ -13,3 +13,7 @@
 # 1.1.0
 
 * dependsOnAsync
+
+# 1.1.1
+
+* isCalculating option on dependsOnAsync

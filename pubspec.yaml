@@ -1,6 +1,6 @@
 name: telescope
 description: A simple and easy to use state manager for flutter based on observable pattern with useful out of the box features.
-version: 1.1.0
+version: 1.1.1
 repository: https://github.com/ali77gh/Telescope
 homepage: https://github.com/ali77gh/Telescope
 
