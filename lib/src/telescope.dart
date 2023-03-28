@@ -46,15 +46,22 @@ class Telescope<T> {
   /// Use this if you need to use await in calculate function
   Telescope.dependsOnAsync(
       this.holden, List<Telescope> dependencies, Future<T> Function() calculate,
-      {this.iWillCallNotifyAll = false}) {
+      {
+        this.iWillCallNotifyAll = false,
+        Telescope<bool>? isCalculating,
+      }) {
+    isCalculating?.value = true;
     calculate().then((value) {
       holden = value;
+      isCalculating?.value = false;
       notifyAll();
     });
     for (var o in dependencies) {
       o.subscribe(() {
+        isCalculating?.value = true;
         calculate().then((value) {
           holden = value;
+          isCalculating?.value = false;
           notifyAll();
         });
       });
