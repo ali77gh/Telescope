@@ -9,3 +9,7 @@
 * License changed from GPL3 to MIT 
 * Fix: pub.dev images load problem
 * Improve: trying to increase pub point
+
+# 1.1.0
+
+* dependsOnAsync
