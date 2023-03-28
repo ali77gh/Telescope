@@ -10,62 +10,57 @@ void main() {
   saveAndLoadList();
 }
 
-class Human{
-  String name="";
+class Human {
+  String name = "";
   @override
   int get hashCode => name.hashCode;
 }
 
-class HumanSerializer extends OnDiskSaveAbility<Human>{
+class HumanSerializer extends OnDiskSaveAbility<Human> {
   @override
-  Human parseOnDiskString(String data) => Human()..name=data;
+  Human parseOnDiskString(String data) => Human()..name = data;
   @override
   String toOnDiskString(Human instance) => instance.name;
 }
 
-
 void saveAndLoad() {
   group("save and load", () {
-
     test("string", () async {
       await SaveAndLoad.save("save-me", null, "value");
       var loaded = await SaveAndLoad.load<String>("save-me", null);
       expect(loaded, "value");
     });
-    
-    test("non built-in", () async {
 
+    test("non built-in", () async {
       var human = Human()..name = "ali";
 
       await SaveAndLoad.save("save-human", HumanSerializer(), human);
-      var loaded = await SaveAndLoad.load<Human>("save-human", HumanSerializer());
+      var loaded =
+          await SaveAndLoad.load<Human>("save-human", HumanSerializer());
       expect(loaded.hashCode, human.hashCode);
     });
-    
   });
 }
 
-void saveAndLoadList(){
+void saveAndLoadList() {
   group("save and load list", () {
-
     test("string", () async {
       await SaveAndLoad.saveList("save-list", null, ["ali", "sohrab"]);
       var loaded = await SaveAndLoad.loadList<String>("save-list", null);
       expect(loaded![0], "ali");
-      expect(loaded[1] , "sohrab");
+      expect(loaded[1], "sohrab");
     });
 
     test("non built-in", () async {
-
       var human = Human()..name = "ali";
       var human2 = Human()..name = "ali2";
 
-      await SaveAndLoad.saveList("save-humans", HumanSerializer(), [human,human2]);
-      var loaded = await SaveAndLoad.loadList<Human>("save-humans", HumanSerializer());
+      await SaveAndLoad.saveList(
+          "save-humans", HumanSerializer(), [human, human2]);
+      var loaded =
+          await SaveAndLoad.loadList<Human>("save-humans", HumanSerializer());
       expect(loaded![0].name, "ali");
       expect(loaded[1].name, "ali2");
     });
-
   });
-
 }

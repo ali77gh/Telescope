@@ -35,6 +35,7 @@ class ObjectApplySampleLayoutState extends State<ObjectApplySampleLayout> {
         )));
   }
 }
+
 class Human {
   String name;
   int age;

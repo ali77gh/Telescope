@@ -2,8 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app/01_simple_text_sample/main.dart' as example01;
 
-void test(){
-
+void test() {
   testWidgets('simple text', (tester) async {
     example01.main();
     await tester.pumpAndSettle();

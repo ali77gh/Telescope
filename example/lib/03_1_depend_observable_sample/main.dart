@@ -1,4 +1,4 @@
-import 'package:app/02_object_apply_sample/object_apply_sample.dart';
+import 'package:app/03_1_depend_observable_sample/depends_on_sample.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: const ObjectApplySampleLayout());
+        home: const DependObservableSampleLayout());
   }
 }

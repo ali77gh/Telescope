@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app/03_depend_observable_sample/main.dart' as example03;
+import 'package:app/03_1_depend_observable_sample/main.dart' as example03;
 
-void test(){
-
+void test() {
   testWidgets('bmi', (tester) async {
     example03.main();
     await tester.pumpAndSettle();
@@ -20,7 +19,7 @@ void test(){
     var height = tester.allWidgets.whereType<Slider>().last.value;
     var result = tester.allWidgets.whereType<Text>().last.data!;
 
-    var bmi = weight/ ((height/ 100) * (height / 100));
+    var bmi = weight / ((height / 100) * (height / 100));
 
     expect(result.contains("$bmi"), true);
     expect(initResult != result, true);

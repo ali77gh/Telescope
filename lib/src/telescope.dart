@@ -42,6 +42,25 @@ class Telescope<T> {
     }
   }
 
+  /// Async version of [Telescope.dependsOn]
+  /// Use this if you need to use await in calculate function
+  Telescope.dependsOnAsync(
+      this.holden, List<Telescope> dependencies, Future<T> Function() calculate,
+      {this.iWillCallNotifyAll = false}) {
+    calculate().then((value) {
+      holden = value;
+      notifyAll();
+    });
+    for (var o in dependencies) {
+      o.subscribe(() {
+        calculate().then((value) {
+          holden = value;
+          notifyAll();
+        });
+      });
+    }
+  }
+
   /// you can save built in type easily on disk by using this constructor
   /// [onDiskId] should be unique id.
   Telescope.saveOnDiskForBuiltInType(this.holden, this.onDiskId) {
@@ -50,8 +69,8 @@ class Telescope<T> {
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    SaveAndLoad.load<T>(onDiskId!, onDiskSaveAbility).then((loaded){
-      if(loaded!=null){
+    SaveAndLoad.load<T>(onDiskId!, onDiskSaveAbility).then((loaded) {
+      if (loaded != null) {
         holden = loaded;
         notifyAll();
       }
@@ -67,13 +86,12 @@ class Telescope<T> {
       {this.iWillCallNotifyAll = false}) {
     TypeCheck.checkIsValidType(holden, iWillCallNotifyAll);
 
-    SaveAndLoad.load(onDiskId!, onDiskSaveAbility!).then((loaded){
-      if(loaded != null){
+    SaveAndLoad.load(onDiskId!, onDiskSaveAbility!).then((loaded) {
+      if (loaded != null) {
         holden = loaded;
         notifyAll();
       }
     });
-
   }
 
   /// [callback] will call when ever value get change

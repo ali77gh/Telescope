@@ -5,7 +5,8 @@ import 'on_disk_save_ability.dart';
 class SaveAndLoad {
   static const String prefix = "TELESCOPE_";
 
-  static save<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility, T value) async {
+  static save<T>(
+      String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility, T value) async {
     onDiskId += prefix;
 
     var pref = await SharedPreferences.getInstance();
@@ -23,12 +24,14 @@ class SaveAndLoad {
         await pref.setBool(onDiskId, value as bool);
         break;
       default:
-        await pref.setString(onDiskId, onDiskSaveAbility!.toOnDiskString(value));
+        await pref.setString(
+            onDiskId, onDiskSaveAbility!.toOnDiskString(value));
         break;
     }
   }
 
-  static Future<T?> load<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility) async {
+  static Future<T?> load<T>(
+      String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility) async {
     onDiskId += prefix;
     var pref = await SharedPreferences.getInstance();
     // not assign while its not on disk yet (keeps default value)
@@ -53,7 +56,8 @@ class SaveAndLoad {
   // list save and load
 
   static const String sep = '~';
-  static saveList<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility, List<T> items) async{
+  static saveList<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility,
+      List<T> items) async {
     onDiskId += prefix;
 
     var stringifies = items.map((i) {
@@ -70,7 +74,8 @@ class SaveAndLoad {
     await pref.setString(onDiskId, stringifies);
   }
 
-  static Future<List<T>?> loadList<T>(String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility) async {
+  static Future<List<T>?> loadList<T>(
+      String onDiskId, OnDiskSaveAbility<T>? onDiskSaveAbility) async {
     onDiskId += prefix;
 
     var pref = await SharedPreferences.getInstance();

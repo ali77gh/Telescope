@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 // Unit tests are here
 // Integration tests are in /examples
 
-void main(){
+void main() {
   typeCheckBuiltIn();
   typeCheckNonBuiltIn();
   implementsHashCodeTest();
@@ -14,9 +14,8 @@ void main(){
   checkValidTypeItemsTest();
 }
 
-void typeCheckBuiltIn(){
-  group("TypeCheck built-in", (){
-
+void typeCheckBuiltIn() {
+  group("TypeCheck built-in", () {
     test("string", () {
       expect(TypeCheck.isBuiltIn<String>(), true);
     });
@@ -35,9 +34,8 @@ void typeCheckBuiltIn(){
   });
 }
 
-void typeCheckNonBuiltIn(){
-  group("TypeCheck not built-in", (){
-
+void typeCheckNonBuiltIn() {
+  group("TypeCheck not built-in", () {
     test("Widget", () {
       expect(TypeCheck.isBuiltIn<Widget>(), false);
     });
@@ -56,81 +54,81 @@ void typeCheckNonBuiltIn(){
   });
 }
 
-
-class Human{
-  int age=18;
+class Human {
+  int age = 18;
 }
-class HashCodeHuman{
-  int age=18;
+
+class HashCodeHuman {
+  int age = 18;
   @override
-  int get hashCode=>age.hashCode;
+  int get hashCode => age.hashCode;
 }
-void implementsHashCodeTest(){
-  group("implements hash code", (){
 
-    test("null", (){
+void implementsHashCodeTest() {
+  group("implements hash code", () {
+    test("null", () {
       expect(TypeCheck.implementsHashCodeProperty<String?>(null), true);
     });
 
-    test("human", (){
+    test("human", () {
       expect(TypeCheck.implementsHashCodeProperty(Human()), false);
     });
 
-    test("hash code human", (){
+    test("hash code human", () {
       expect(TypeCheck.implementsHashCodeProperty(HashCodeHuman()), true);
     });
-
   });
 }
 
-void checkValidTypeTest(){
-  group("check valid type test", (){
-
-    test("supported String", (){
+void checkValidTypeTest() {
+  group("check valid type test", () {
+    test("supported String", () {
       expect(TypeCheck.checkIsValidType<String>("string", false), null);
     });
 
-    test("supported Human", (){
-      expect(TypeCheck.checkIsValidType<HashCodeHuman>(HashCodeHuman(), false), null);
+    test("supported Human", () {
+      expect(TypeCheck.checkIsValidType<HashCodeHuman>(HashCodeHuman(), false),
+          null);
     });
 
-    test("not supported Human", (){
-      expect((){
+    test("not supported Human", () {
+      expect(() {
         TypeCheck.checkIsValidType<Human>(Human(), false);
       }, throwsA(TypeMatcher()));
     });
 
-    test("not supported Human iWillCallNotifyAll", (){
+    test("not supported Human iWillCallNotifyAll", () {
       expect(TypeCheck.checkIsValidType<Human>(Human(), true), null);
     });
-
   });
 }
 
-void checkValidTypeItemsTest(){
-
-  group("check valid type items test", (){
-
-    test("supported empty list", (){
+void checkValidTypeItemsTest() {
+  group("check valid type items test", () {
+    test("supported empty list", () {
       expect(TypeCheck.checkIsValidTypeForItems([], false), null);
     });
 
-    test("supported String list", (){
-      expect(TypeCheck.checkIsValidTypeForItems(["1","2"], false), null);
+    test("supported String list", () {
+      expect(TypeCheck.checkIsValidTypeForItems(["1", "2"], false), null);
     });
 
-    test("supported Human list", (){
-      expect(TypeCheck.checkIsValidTypeForItems([HashCodeHuman(),HashCodeHuman()], false), null);
+    test("supported Human list", () {
+      expect(
+          TypeCheck.checkIsValidTypeForItems(
+              [HashCodeHuman(), HashCodeHuman()], false),
+          null);
     });
 
-    test("not supported Human", (){
-      expect((){
-        TypeCheck.checkIsValidTypeForItems([Human(),Human()], false);
+    test("not supported Human", () {
+      expect(() {
+        TypeCheck.checkIsValidTypeForItems([Human(), Human()], false);
       }, throwsA(TypeMatcher()));
     });
 
-    test("not supported Human list iWillCallNotifyAll", (){
-      expect(TypeCheck.checkIsValidTypeForItems([Human(),Human()], true), null);
+    test("not supported Human list iWillCallNotifyAll", () {
+      expect(
+          TypeCheck.checkIsValidTypeForItems([Human(), Human()], true), null);
     });
   });
 }

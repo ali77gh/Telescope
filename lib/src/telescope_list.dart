@@ -37,8 +37,8 @@ class TelescopeList<T> extends Telescope<List<T>> {
           " use saveOnDiskForNonBuiltInType and provide OnDiskSaveAbility";
     }
 
-    SaveAndLoad.loadList<T>(onDiskId, null).then((loaded){
-      if(loaded!=null){
+    SaveAndLoad.loadList<T>(onDiskId, null).then((loaded) {
+      if (loaded != null) {
         holden = loaded;
         notifyAll();
       }
@@ -56,8 +56,8 @@ class TelescopeList<T> extends Telescope<List<T>> {
     TypeCheck.checkIsValidTypeForItems(items, iWillCallNotifyAllForItems);
     super.onDiskId = onDiskId;
 
-    SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbilityForItems).then((loaded){
-      if(loaded!=null){
+    SaveAndLoad.loadList<T>(onDiskId, onDiskSaveAbilityForItems).then((loaded) {
+      if (loaded != null) {
         holden = loaded;
         notifyAll();
       }
