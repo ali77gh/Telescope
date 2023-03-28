@@ -88,10 +88,27 @@ var showingText  = Telescope.dependsOn([bmi], () {
 So when ever height or weight value get changes, the bmi will calculate itself because it depends on height and weight.<br>
 And showingText will calculate itself too, because it depends on bmi.
 
+#### Async way:
+```dart
+var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
+  return await calculateBMI(height.value, weight.value);
+});
+```
+
+#### Observable on loading state
+This will make <b>isCalculatingBMI</b> true on loading and false when loaded, you may need this to show loading animation.
+```dart
+var isCalculatingBMI = Telescope<bool>(false);
+var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
+   return await calculateBMI(height.value, weight.value);
+}, isCalculating: isCalculatingBMI);
+```
+
+
 ### Save On Disk
 You can save telescope data on disk easily like this:
 ```dart
-static var height = Telescope.saveOnDiskForBuiltInType(187, "bmi_height_input");
+var height = Telescope.saveOnDiskForBuiltInType(187, "bmi_height_input");
 ```
 So if user close the app and open it again it will load last value of telescope for You.
 <br>
@@ -148,4 +165,4 @@ This  method also can use in TelescopeList in same way.
    Checkout telescope/examples 
 
 # License
-GPL version 3
+MIT
