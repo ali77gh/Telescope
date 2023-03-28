@@ -62,6 +62,9 @@ class HashCodeHuman {
   int age = 18;
   @override
   int get hashCode => age.hashCode;
+
+  @override
+  bool operator ==(Object other) => hashCode == other.hashCode;
 }
 
 void implementsHashCodeTest() {
@@ -94,7 +97,7 @@ void checkValidTypeTest() {
     test("not supported Human", () {
       expect(() {
         TypeCheck.checkIsValidType<Human>(Human(), false);
-      }, throwsA(TypeMatcher()));
+      }, throwsA(const TypeMatcher()));
     });
 
     test("not supported Human iWillCallNotifyAll", () {
@@ -123,7 +126,7 @@ void checkValidTypeItemsTest() {
     test("not supported Human", () {
       expect(() {
         TypeCheck.checkIsValidTypeForItems([Human(), Human()], false);
-      }, throwsA(TypeMatcher()));
+      }, throwsA(const TypeMatcher()));
     });
 
     test("not supported Human list iWillCallNotifyAll", () {

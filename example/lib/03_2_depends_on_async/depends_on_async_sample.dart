@@ -16,7 +16,7 @@ class DependObservableAsyncSampleLayoutState
   late Telescope<int> weight;
   late Telescope<double> bmi;
   late Telescope<String> showingText;
-  var  loadingBMI = Telescope(false);
+  var loadingBMI = Telescope(false);
 
   @override
   void initState() {
@@ -31,7 +31,11 @@ class DependObservableAsyncSampleLayoutState
 
     showingText = Telescope.dependsOn([height, weight, bmi, loadingBMI], () {
       var bmis = bmi.value.toString();
-      bmis = loadingBMI.value ? "..." : bmis.length > 5 ? bmis.substring(0, 5) : bmis;
+      bmis = loadingBMI.value
+          ? "..."
+          : bmis.length > 5
+              ? bmis.substring(0, 5)
+              : bmis;
 
       return "weight is ${weight.value} and height is ${height.value} so bmi will be $bmis";
     });

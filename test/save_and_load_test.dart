@@ -14,6 +14,8 @@ class Human {
   String name = "";
   @override
   int get hashCode => name.hashCode;
+  @override
+  bool operator ==(Object other) => hashCode == other.hashCode;
 }
 
 class HumanSerializer extends OnDiskSaveAbility<Human> {
