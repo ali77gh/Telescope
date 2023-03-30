@@ -2,17 +2,24 @@
 <img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png" height="200" width="200"> <br>
 Just another state manager for flutter based on observable:eyes: design pattern.
 
-Telescope:telescope: tries to be:
-1. Easy to learn:book: (You can learn it in 5-10 min by reading README.md file).
-2. Easy to use:hearts: (with dependsOn and saveOnDisk features).
-3. Flexible:ocean:
+Telescope:telescope: is
+1. Easy to learn:book: 
+   1. You can learn it in 5-10 min by reading README.
+   2. Also see [examples](https://github.com/ali77gh/Telescope/tree/master/example/lib). 
+2. Flexible:ocean:
    1. Can be used beside other state managers:couple:.
    2. It lets you do it in your way:muscle:.
-4. Make it harder to make bugs:beetle::no_entry:.
+3. Make it harder to make bugs:beetle::no_entry:.
    1. With separation of concerns:raised_hands:.
    2. No setState() needed:no_good:.
-5. Performance:zap: (just rebuild widgets that need to rebuild).
-6. Lightweight:hatched_chick: (less then 900KB)
+4. Fast:zap: (just rebuild widgets that need to rebuild).
+5. Lightweight:hatched_chick: (less then 900KB)
+6. Feature rich:hearts: 
+   1. Save states on disk and load when needed.
+   2. Telescopes can watch each other with dependsOn() constructor.
+   3. Depends on can be async
+   4. Caching ability. (coming soon)
+   5. Request a feature [here](https://github.com/ali77gh/Telescope/issues).
 
 ### Installation
 ```bash
@@ -29,12 +36,12 @@ In 3 easy steps.
 
 ### 1. Make a telescope :
 ```dart
-  var textValue = Telescope("default value");
+var textValue = Telescope("default value");
 ```
 
 ### 2. Watch(this):
 Put this in middle of you widget build function.<br>
-You can watch single telescope in multiple widget
+You can watch one telescope instance from multiple widget => [example](https://github.com/ali77gh/Telescope/tree/master/example/lib/05_share_telescope_as_param).
 ```dart
 @override
 Widget build(BuildContext context) {
@@ -42,7 +49,7 @@ Widget build(BuildContext context) {
       child: SafeArea(
           child: Container(
             child: Column(children: [
-              // watch like this ('this' is State that will automatically rebuild on data change )
+              // watch like this ('this' is State that will automatically rebuild on data change)
               Text(textValue.watch(this)), 
               Text(textValue.watch(this)),
               Text(textValue.watch(this).length.toString()),
@@ -95,7 +102,7 @@ var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
 });
 ```
 
-#### Observable on loading state
+#### Observable on loading state:
 This will make <b>isCalculatingBMI</b> true on loading and false when loaded, you may need this to show loading animation.
 ```dart
 var isCalculatingBMI = Telescope<bool>(false);
@@ -162,7 +169,7 @@ Telescope will use 'parseOnDiskString' and 'toOnDiskString' to serialize and des
 This  method also can use in TelescopeList in same way.
 
 # Examples
-   Checkout telescope/examples 
+[examples](https://github.com/ali77gh/Telescope/tree/master/example/lib).
 
 # License
 MIT
