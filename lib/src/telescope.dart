@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:telescope/src/fs/save_and_load.dart';
 import 'package:telescope/src/type_check.dart';
@@ -50,9 +52,32 @@ class Telescope<T> {
     Future<T> Function() calculate, {
     this.iWillCallNotifyAll = false,
     Telescope<bool>? isCalculating,
+    bool cache = false,
+    Duration cacheTime = Duration.zero, // TODO
   }) {
+
+    int getDependenciesHash(){
+      return dependencies.map((e) => e.value.hashCode).reduce((value,
+          element) => value * element);
+    }
+    
+    HashMap<int, T>? hashmap;
+    if(cache){
+      hashmap = HashMap<int, T>();
+    }
+    Future<T> cal() async {
+      if (!cache) return await calculate();
+      var key = getDependenciesHash();
+      if (hashmap!.containsKey(key)){
+        return hashmap[key] as T;
+      }
+      return await calculate();
+    }
+
     isCalculating?.value = true;
-    calculate().then((value) {
+    int dh = getDependenciesHash();
+    cal().then((value) {
+      hashmap?[dh] = value;
       holden = value;
       isCalculating?.value = false;
       notifyAll();
@@ -60,7 +85,9 @@ class Telescope<T> {
     for (var o in dependencies) {
       o.subscribe(() {
         isCalculating?.value = true;
-        calculate().then((value) {
+        int dh = getDependenciesHash();
+        cal().then((value) {
+          hashmap?[dh] = value;
           holden = value;
           isCalculating?.value = false;
           notifyAll();
