@@ -77,6 +77,8 @@ class Telescope<T> {
     isCalculating?.value = true;
     int dh = getDependenciesHash();
     cal().then((value) {
+      int cdh = getDependenciesHash();
+      if(dh!=cdh) return;
       hashmap?[dh] = value;
       holden = value;
       isCalculating?.value = false;
@@ -87,6 +89,8 @@ class Telescope<T> {
         isCalculating?.value = true;
         int dh = getDependenciesHash();
         cal().then((value) {
+          int cdh = getDependenciesHash();
+          if(dh!=cdh) return;
           hashmap?[dh] = value;
           holden = value;
           isCalculating?.value = false;
