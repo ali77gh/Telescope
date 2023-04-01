@@ -46,56 +46,65 @@ class Telescope<T> {
 
   /// Async version of [Telescope.dependsOn]
   /// Use this if you need to use await in calculate function
+  /// [isCalculating] will update to true on calculate start and update to false on calculate ends
+  /// [enableCaching] = true will enable caching
+  /// [cacheExpireTime] will expire cache after Duration. don't forget to pass [enableCaching] = true
   Telescope.dependsOnAsync(
     this.holden,
     List<Telescope> dependencies,
     Future<T> Function() calculate, {
     this.iWillCallNotifyAll = false,
     Telescope<bool>? isCalculating,
-    bool cache = false,
-    Duration cacheTime = Duration.zero, // TODO
+    bool enableCaching = false,
+    Duration? cacheExpireTime,
   }) {
+
+    var hashmap = HashMap<int, T>();
+    var expireTimeMap = HashMap<int, DateTime>();
+
+    bool isExpired(int key){
+      if(cacheExpireTime == null) return false;
+      if(!expireTimeMap.containsKey(key)) return true;
+      return expireTimeMap[key]!.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch;
+    }
 
     int getDependenciesHash(){
       return dependencies.map((e) => e.value.hashCode).reduce((value,
           element) => value * element);
     }
-    
-    HashMap<int, T>? hashmap;
-    if(cache){
-      hashmap = HashMap<int, T>();
-    }
+
     Future<T> cal() async {
-      if (!cache) return await calculate();
+      if (!enableCaching) return await calculate();
       var key = getDependenciesHash();
-      if (hashmap!.containsKey(key)){
+      if (hashmap.containsKey(key) && !isExpired(key)){
         return hashmap[key] as T;
       }
       return await calculate();
     }
 
-    isCalculating?.value = true;
-    int dh = getDependenciesHash();
-    cal().then((value) {
-      int cdh = getDependenciesHash();
-      if(dh!=cdh) return;
-      hashmap?[dh] = value;
-      holden = value;
-      isCalculating?.value = false;
-      notifyAll();
-    });
+    void calAndUpdate(){
+      isCalculating?.value = true;
+      int dh = getDependenciesHash();
+      cal().then((value) {
+        if(enableCaching){
+          hashmap[dh] = value;
+          if(cacheExpireTime!=null){
+            var expTime = DateTime.now().add(cacheExpireTime);
+            expireTimeMap[dh] = expTime;
+          }
+        }
+        int cdh = getDependenciesHash();
+        if(dh!=cdh) return;
+        holden = value;
+        isCalculating?.value = false;
+        notifyAll();
+      });
+    }
+
+    calAndUpdate();
     for (var o in dependencies) {
       o.subscribe(() {
-        isCalculating?.value = true;
-        int dh = getDependenciesHash();
-        cal().then((value) {
-          int cdh = getDependenciesHash();
-          if(dh!=cdh) return;
-          hashmap?[dh] = value;
-          holden = value;
-          isCalculating?.value = false;
-          notifyAll();
-        });
+        calAndUpdate();
       });
     }
   }

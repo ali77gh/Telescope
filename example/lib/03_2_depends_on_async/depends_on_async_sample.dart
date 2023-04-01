@@ -27,7 +27,10 @@ class DependObservableAsyncSampleLayoutState
 
     bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
       return await calculateBMI(height.value, weight.value);
-    }, isCalculating: loadingBMI);
+    }, isCalculating: loadingBMI,
+      enableCaching: true,
+      cacheExpireTime: const Duration(seconds: 10)
+    );
 
     showingText = Telescope.dependsOn([height, weight, bmi, loadingBMI], () {
       var bmis = bmi.value.toString();
