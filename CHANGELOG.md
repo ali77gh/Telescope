@@ -18,9 +18,9 @@
 
 * isCalculating option on dependsOnAsync.
 
-
-# 1.3.0
+# 1.3.1
 
 * bugfix: prevent updating holden when other calculate is running.
 * caching.
 * caching expire time.
+* add document to readme.

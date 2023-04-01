@@ -77,7 +77,7 @@ And state will get update automatically without calling setState
 # Other features:
 
 ### Depends on:
-Telescopes can be depended on other telescopes
+Telescopes can be depended on other telescopes.
 
 ```dart
 var height = Telescope(186);
@@ -95,12 +95,26 @@ var showingText  = Telescope.dependsOn([bmi], () {
 So when ever height or weight value get changes, the bmi will calculate itself because it depends on height and weight.<br>
 And showingText will calculate itself too, because it depends on bmi.
 
+<br>
+
 #### Async way:
 ```dart
 var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
   return await calculateBMI(height.value, weight.value);
 });
 ```
+
+<br>
+
+#### Caching:
+```dart
+var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
+   return await calculateBMI(height.value, weight.value);
+}, enableCaching: true);
+```
+You can also set expire time by passing <b>cacheExpireTime</b>.
+
+<br>
 
 #### Observable on loading state:
 This will make <b>isCalculatingBMI</b> true on loading and false when loaded, you may need this to show loading animation.
