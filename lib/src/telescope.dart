@@ -58,43 +58,44 @@ class Telescope<T> {
     bool enableCaching = false,
     Duration? cacheExpireTime,
   }) {
-
     var hashmap = HashMap<int, T>();
     var expireTimeMap = HashMap<int, DateTime>();
 
-    bool isExpired(int key){
-      if(cacheExpireTime == null) return false;
-      if(!expireTimeMap.containsKey(key)) return true;
-      return expireTimeMap[key]!.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch;
+    bool isExpired(int key) {
+      if (cacheExpireTime == null) return false;
+      if (!expireTimeMap.containsKey(key)) return true;
+      return expireTimeMap[key]!.millisecondsSinceEpoch <
+          DateTime.now().millisecondsSinceEpoch;
     }
 
-    int getDependenciesHash(){
-      return dependencies.map((e) => e.value.hashCode).reduce((value,
-          element) => value * element);
+    int getDependenciesHash() {
+      return dependencies
+          .map((e) => e.value.hashCode)
+          .reduce((value, element) => value * element);
     }
 
     Future<T> cal() async {
       if (!enableCaching) return await calculate();
       var key = getDependenciesHash();
-      if (hashmap.containsKey(key) && !isExpired(key)){
+      if (hashmap.containsKey(key) && !isExpired(key)) {
         return hashmap[key] as T;
       }
       return await calculate();
     }
 
-    void calAndUpdate(){
+    void calAndUpdate() {
       isCalculating?.value = true;
       int dh = getDependenciesHash();
       cal().then((value) {
-        if(enableCaching){
+        if (enableCaching) {
           hashmap[dh] = value;
-          if(cacheExpireTime!=null){
+          if (cacheExpireTime != null) {
             var expTime = DateTime.now().add(cacheExpireTime);
             expireTimeMap[dh] = expTime;
           }
         }
         int cdh = getDependenciesHash();
-        if(dh!=cdh) return;
+        if (dh != cdh) return;
         holden = value;
         isCalculating?.value = false;
         notifyAll();
