@@ -49,6 +49,7 @@ class Telescope<T> {
   /// [isCalculating] will update to true on calculate start and update to false on calculate ends
   /// [enableCaching] = true will enable caching
   /// [cacheExpireTime] will expire cache after Duration. don't forget to pass [enableCaching] = true
+  /// [debounceTime] will call your async function only if a given time has passed without any changes on dependencies.
   Telescope.dependsOnAsync(
     this.holden,
     List<Telescope> dependencies,
