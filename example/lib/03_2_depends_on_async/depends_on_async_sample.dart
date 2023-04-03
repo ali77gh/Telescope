@@ -30,7 +30,8 @@ class DependObservableAsyncSampleLayoutState
     },
         isCalculating: loadingBMI,
         enableCaching: true,
-        cacheExpireTime: const Duration(seconds: 10));
+        cacheExpireTime: const Duration(seconds: 10),
+        debounceTime: const Duration(milliseconds: 500));
 
     showingText = Telescope.dependsOn([height, weight, bmi, loadingBMI], () {
       var bmis = bmi.value.toString();

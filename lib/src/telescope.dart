@@ -57,6 +57,7 @@ class Telescope<T> {
     Telescope<bool>? isCalculating,
     bool enableCaching = false,
     Duration? cacheExpireTime,
+    Duration debounceTime = Duration.zero,
   }) {
     var hashmap = HashMap<int, T>();
     var expireTimeMap = HashMap<int, DateTime>();
@@ -86,19 +87,25 @@ class Telescope<T> {
     void calAndUpdate() {
       isCalculating?.value = true;
       int dh = getDependenciesHash();
-      cal().then((value) {
-        if (enableCaching) {
-          hashmap[dh] = value;
-          if (cacheExpireTime != null) {
-            var expTime = DateTime.now().add(cacheExpireTime);
-            expireTimeMap[dh] = expTime;
-          }
+      Future.delayed(debounceTime, () {
+        if (debounceTime != Duration.zero) {
+          int cdh = getDependenciesHash();
+          if (dh != cdh) return;
         }
-        int cdh = getDependenciesHash();
-        if (dh != cdh) return;
-        holden = value;
-        isCalculating?.value = false;
-        notifyAll();
+        cal().then((value) {
+          if (enableCaching) {
+            hashmap[dh] = value;
+            if (cacheExpireTime != null) {
+              var expTime = DateTime.now().add(cacheExpireTime);
+              expireTimeMap[dh] = expTime;
+            }
+          }
+          int cdh = getDependenciesHash();
+          if (dh != cdh) return;
+          holden = value;
+          isCalculating?.value = false;
+          notifyAll();
+        });
       });
     }
 
