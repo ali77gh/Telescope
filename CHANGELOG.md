@@ -24,3 +24,7 @@
 * caching.
 * caching expire time.
 * add document to readme.
+
+# 1.4.0
+
+* debounce feature added.
