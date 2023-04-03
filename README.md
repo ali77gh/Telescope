@@ -14,9 +14,10 @@ Telescope:telescope:
    1. Can directly bind to Flutters StateFullWidget and rebuild:recycle: widget on value change.
    2. Save states on disk and load when needed.
    3. Telescopes can watch each other with dependsOn() constructor.
-   4. Depends on can be async
+   4. Depends on can be async.
    5. Caching ability with expireTime option.
-   6. Request a feature [here](https://github.com/ali77gh/Telescope/issues).
+   6. debounceTime option (something like rx-js debounceTime).
+   7. Request a feature [here](https://github.com/ali77gh/Telescope/issues).
 3. Make it harder to make bugs:beetle::no_entry:.
    1. With separation of concerns:raised_hands:.
    2. No setState() needed:no_good:.
@@ -144,6 +145,18 @@ var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
 }, enableCaching: true);
 ```
 You can also set expire time by passing <b>cacheExpireTime</b>.
+
+<br>
+
+#### Debounce:
+debounceTime: will call your async function only if a given time has passed without any changes on dependencies.<br>
+```dart
+var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
+   return await calculateBMI(height.value, weight.value);
+}, debounceTime: Duration(milliseconds: 500));
+```
+It's useful when you want to run your async function when user stop typing or moving slider or...
+
 
 <br>
 
