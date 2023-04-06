@@ -88,14 +88,14 @@ class Telescope<T> {
     void calAndUpdate() {
       isCalculating?.value = true;
       int dh = getDependenciesHash();
-      void inner(){
+      void inner() {
         cal().then((value) {
           if (enableCaching) {
             hashmap[dh] = value;
             if (cacheExpireTime != null) {
               var expTime = DateTime.now().add(cacheExpireTime);
               expireTimeMap[dh] = expTime;
-              Future.delayed(cacheExpireTime, (){
+              Future.delayed(cacheExpireTime, () {
                 expireTimeMap.remove(dh);
               });
             }
@@ -107,13 +107,14 @@ class Telescope<T> {
           notifyAll();
         });
       }
+
       if (debounceTime != Duration.zero) {
         Future.delayed(debounceTime, () {
           int cdh = getDependenciesHash();
           if (dh != cdh) return;
           inner();
         });
-      }else{
+      } else {
         inner();
       }
     }

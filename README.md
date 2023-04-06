@@ -5,6 +5,7 @@ Easy to use <b>State manager</b> for flutter based on observer:eyes: design patt
 ``` Telescope is more than a normal observer. ```
 
 Telescope:telescope:
+<br>
 0. Supports all platforms.
 1. Easy to learn:book: 
    1. You can learn it in 5-10 min by reading README.

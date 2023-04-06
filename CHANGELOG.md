@@ -28,3 +28,7 @@
 # 1.4.0
 
 * debounce feature added.
+
+# 1.4.2
+
+* performance improve
