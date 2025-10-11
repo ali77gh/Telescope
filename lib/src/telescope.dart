@@ -20,6 +20,7 @@ class Telescope<T> {
   bool isDependent = false;
 
   String? onDiskId;
+
   bool get isSavable => onDiskId != null;
   OnDiskSaveAbility<T>? onDiskSaveAbility;
 
@@ -173,6 +174,17 @@ class Telescope<T> {
     return holden;
   }
 
+  /// Add listener without triggering widget rebuild.
+  /// Useful when you only want to execute code on value change.
+  void addListener(Function(T) listener) {
+    _callbacks.add(() => listener(holden));
+  }
+
+  /// Remove listener added by [addListener]
+  void removeListener(Function(T) listener) {
+    _callbacks.remove(() => listener(holden));
+  }
+
   /// Returns value of telescope
   /// Will call [notifyAll] after change detected by hashcode
   /// You can use holden if you don't need hashCode and change detection
@@ -218,10 +230,48 @@ class Telescope<T> {
         try {
           // it may crash while widget is not mounted
           callback(() {});
-        } catch (e) {/*ignore*/}
+        } catch (e) {
+          /*ignore*/
+        }
       } else {
         callback(); // this will make State call build in next frame render
       }
     }
+  }
+
+  /// Build widget like a Consumer.
+  /// Only this widget will rebuild when telescope value changes.
+  Widget build<TT>({required Widget Function(BuildContext, TT) builder}) {
+    return _TelescopeBuilder<TT>(
+        telescope: this as Telescope<TT>, builder: builder);
+  }
+}
+
+/// Internal helper widget for selective rebuild.
+/// Subscribes to telescope and calls setState only for itself.
+class _TelescopeBuilder<T> extends StatefulWidget {
+  final Telescope<T> telescope;
+  final Widget Function(BuildContext, T) builder;
+
+  const _TelescopeBuilder(
+      {Key? key, required this.telescope, required this.builder})
+      : super(key: key);
+
+  @override
+  State<_TelescopeBuilder<T>> createState() => _TelescopeBuilderState<T>();
+}
+
+class _TelescopeBuilderState<T> extends State<_TelescopeBuilder<T>> {
+  @override
+  void initState() {
+    super.initState();
+    widget.telescope.subscribe(() {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, widget.telescope.value);
   }
 }
