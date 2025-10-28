@@ -227,6 +227,21 @@ Telescope will use 'parseOnDiskString' and 'toOnDiskString' to serialize and des
 
 This method also can use in TelescopeList in same way.
 
+<br>
+
+### New Features
+
+- TelescopeList: list version of Telescope
+   - Supports dependency on other telescopes
+   - Can save/load on disk
+   - Calls `notifyAll` only once per actual change to avoid double rebuilds
+- TelescopeBuilder: widget to rebuild only the widget that depends on telescope value
+- TelescopeProvider: provide telescopes down the widget tree for easy access
+- Selection API: watch and update selected items in lists efficiently
+- Example: [https://github.com/ali77gh/Telescope/tree/master/example/lib//08_selective_rebuild_sample]
+
+<br>
+
 # Last Words:
    * Plz:pray: star:star: repo.
    * [Full documentation](https://pub.dev/documentation/telescope/latest/telescope/telescope-library.html).

@@ -20,6 +20,7 @@ class Telescope<T> {
   bool isDependent = false;
 
   String? onDiskId;
+
   bool get isSavable => onDiskId != null;
   OnDiskSaveAbility<T>? onDiskSaveAbility;
 
@@ -51,15 +52,15 @@ class Telescope<T> {
   /// [cacheExpireTime] will expire cache after Duration. don't forget to pass [enableCaching] = true
   /// [debounceTime] will call your async function only if a given time has passed without any changes on dependencies.
   Telescope.dependsOnAsync(
-    this.holden,
-    List<Telescope> dependencies,
-    Future<T> Function() calculate, {
-    this.iWillCallNotifyAll = false,
-    Telescope<bool>? isCalculating,
-    bool enableCaching = false,
-    Duration? cacheExpireTime,
-    Duration debounceTime = Duration.zero,
-  }) {
+      this.holden,
+      List<Telescope> dependencies,
+      Future<T> Function() calculate, {
+        this.iWillCallNotifyAll = false,
+        Telescope<bool>? isCalculating,
+        bool enableCaching = false,
+        Duration? cacheExpireTime,
+        Duration debounceTime = Duration.zero,
+      }) {
     var hashmap = HashMap<int, T>();
     var expireTimeMap = HashMap<int, DateTime>();
 
@@ -168,28 +169,24 @@ class Telescope<T> {
   /// [state] will rebuild on value change
   /// and this function also returns value to use it on build function.
   T watch(State state) {
-    // ignore: invalid_use_of_protected_member
     subscribe(state.setState);
     return holden;
   }
 
-  /// Returns value of telescope
-  /// Will call [notifyAll] after change detected by hashcode
-  /// You can use holden if you don't need hashCode and change detection
-  T get value {
-    var beforeChangeHash = holden.hashCode;
-    // push callback to event loop immediately
-    Future.delayed(Duration.zero, () {
-      var afterChangeHash = holden.hashCode;
-      if (beforeChangeHash != afterChangeHash) {
-        notifyAll();
-        if (isSavable) {
-          SaveAndLoad.save(onDiskId!, onDiskSaveAbility, holden);
-        }
-      }
-    });
-    return holden;
+  /// Add listener without triggering widget rebuild.
+  /// Useful when you only want to execute code on value change.
+  void addListener(Function(T) listener) {
+    _callbacks.add(() => listener(holden));
   }
+
+  /// Remove listener added by [addListener]
+  void removeListener(Function(T) listener) {
+    _callbacks.remove(() => listener(holden));
+  }
+
+  /// Returns value of telescope
+  /// **corrected:** no delayed future
+  T get value => holden;
 
   /// will set value and call [notifyAll]
   set value(T value) {
@@ -203,7 +200,6 @@ class Telescope<T> {
     }
 
     holden = value;
-
     notifyAll();
 
     if (isSavable) {
@@ -216,12 +212,47 @@ class Telescope<T> {
     for (Function callback in _callbacks) {
       if (callback is Function(VoidCallback)) {
         try {
-          // it may crash while widget is not mounted
           callback(() {});
-        } catch (e) {/*ignore*/}
+        } catch (e) {
+          /*ignore*/
+        }
       } else {
-        callback(); // this will make State call build in next frame render
+        callback();
       }
     }
+  }
+
+  /// Build widget like a Consumer.
+  /// Only this widget will rebuild when telescope value changes.
+  Widget build<TT>({required Widget Function(BuildContext, TT) builder}) {
+    return _TelescopeBuilder<TT>(
+        telescope: this as Telescope<TT>, builder: builder);
+  }
+}
+
+class _TelescopeBuilder<T> extends StatefulWidget {
+  final Telescope<T> telescope;
+  final Widget Function(BuildContext, T) builder;
+
+  const _TelescopeBuilder(
+      {Key? key, required this.telescope, required this.builder})
+      : super(key: key);
+
+  @override
+  State<_TelescopeBuilder<T>> createState() => _TelescopeBuilderState<T>();
+}
+
+class _TelescopeBuilderState<T> extends State<_TelescopeBuilder<T>> {
+  @override
+  void initState() {
+    super.initState();
+    widget.telescope.subscribe(() {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, widget.telescope.value);
   }
 }

@@ -28,9 +28,9 @@ class TelescopeList<T> extends Telescope<List<T>> {
   /// you can save built in type easily on disk by using this constructor
   /// [onDiskId] should be unique id.
   TelescopeList.saveOnDiskForBuiltInType(
-    List<T> items,
-    String onDiskId,
-  ) : super(items, iWillCallNotifyAll: true) {
+      List<T> items,
+      String onDiskId,
+      ) : super(items, iWillCallNotifyAll: true) {
     super.onDiskId = onDiskId;
     if (!TypeCheck.isBuiltIn<T>()) {
       throw "List<${T.toString()}> which ${T.toString()} is not a built-in type(int|string|double|bool)"
@@ -68,12 +68,11 @@ class TelescopeList<T> extends Telescope<List<T>> {
   @override
   set value(List<T> items) {
     TypeCheck.checkIsValidTypeForItems(items, iWillCallNotifyAllForItems);
+    super.holden = items; // set before notifying
     notifyAll();
     if (isSavable) {
       SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
     }
-
-    super.holden = items;
   }
 
   /// Returns value of telescope
@@ -81,18 +80,15 @@ class TelescopeList<T> extends Telescope<List<T>> {
   /// You can use holden if you don't need hashCode and change detection
   @override
   List<T> get value {
+    if (holden.isEmpty) return holden;
     var beforeChangeHash =
-        holden.map((i) => i.hashCode).reduce((v, e) => v * e);
-    var empty = holden.isEmpty;
+    holden.map((i) => i.hashCode).reduce((v, e) => v * e);
+
     // push callback to event loop immediately
     Future.delayed(Duration.zero, () {
       var afterChangeHash =
-          holden.map((i) => i.hashCode).reduce((v, e) => v * e);
+      holden.map((i) => i.hashCode).reduce((v, e) => v * e);
       if (beforeChangeHash != afterChangeHash) {
-        if (empty) {
-          TypeCheck.checkIsValidTypeForItems(
-              holden, iWillCallNotifyAllForItems);
-        }
         notifyAll();
         if (isSavable) {
           SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
@@ -152,28 +148,11 @@ class TelescopeList<T> extends Telescope<List<T>> {
 
   ///same as list but calls [notifyAll]
   T? operator [](int index) {
-    var beforeChangeHash = holden[index].hashCode;
-    var empty = holden.isEmpty;
-    // push callback to event loop immediately
-    Future.delayed(Duration.zero, () {
-      var afterChangeHash = holden[index].hashCode;
-      if (beforeChangeHash != afterChangeHash) {
-        if (empty) {
-          TypeCheck.checkIsValidTypeForItems(
-              holden, iWillCallNotifyAllForItems);
-        }
-        notifyAll();
-        if (isSavable) {
-          SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
-        }
-      }
-    });
     return holden[index];
   }
 
   ///same as list but calls [notifyAll]
   void operator []=(int index, T val) {
-    //no need to check type because if list[0]=2 is happening then list[0] is already checked
     holden[index] = val;
     if (isSavable) {
       SaveAndLoad.saveList(onDiskId!, onDiskSaveAbilityForItems, holden);
