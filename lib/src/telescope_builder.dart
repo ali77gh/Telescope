@@ -25,21 +25,12 @@ class TelescopeBuilder<T> extends StatefulWidget {
 }
 
 class _TelescopeBuilderState<T> extends State<TelescopeBuilder<T>> {
-  late T value;
   late int telescopeDisposeId;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with the current Telescope value
-    value = widget.telescope.value;
-    // Add listener to update this widget when the value changes
-    telescopeDisposeId = widget.telescope.addListener(_update);
-  }
-
-  /// Called when Telescope value changes
-  void _update(T val) {
-    if (mounted) setState(() => value = val);
+    telescopeDisposeId = widget.telescope.subscribe(() => setState(() {}));
   }
 
   @override
@@ -51,7 +42,7 @@ class _TelescopeBuilderState<T> extends State<TelescopeBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    // Call builder with the current value
-    return widget.builder(context, value);
+    // ignore: invalid_use_of_protected_member
+    return widget.builder(context, widget.telescope.holden);
   }
 }
