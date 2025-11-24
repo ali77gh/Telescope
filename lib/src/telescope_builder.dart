@@ -26,6 +26,7 @@ class TelescopeBuilder<T> extends StatefulWidget {
 
 class _TelescopeBuilderState<T> extends State<TelescopeBuilder<T>> {
   late T value;
+  late int telescopeDisposeId;
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _TelescopeBuilderState<T> extends State<TelescopeBuilder<T>> {
     // Initialize with the current Telescope value
     value = widget.telescope.value;
     // Add listener to update this widget when the value changes
-    widget.telescope.addListener(_update);
+    telescopeDisposeId = widget.telescope.addListener(_update);
   }
 
   /// Called when Telescope value changes
@@ -44,7 +45,7 @@ class _TelescopeBuilderState<T> extends State<TelescopeBuilder<T>> {
   @override
   void dispose() {
     // Remove listener when widget is disposed
-    widget.telescope.removeListener(_update);
+    widget.telescope.removeListener(telescopeDisposeId);
     super.dispose();
   }
 
