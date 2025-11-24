@@ -1,11 +1,11 @@
 name: telescope
 description: A simple and easy to use state manager for flutter based on observable pattern with useful out of the box features.
-version: 1.4.2
+version: 2.0.0
 repository: https://github.com/ali77gh/Telescope
 homepage: https://github.com/ali77gh/Telescope
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ^3.10.1
   flutter: ">=1.17.0"
 
 dependencies:
@@ -15,6 +15,6 @@ dependencies:
 
 dev_dependencies:
   test: ^1.14.4
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:

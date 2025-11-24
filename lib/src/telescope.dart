@@ -176,8 +176,7 @@ class Telescope<T> {
 
   /// [state] will rebuild on value change
   /// and this function also returns value to use it on build function.
-  @Deprecated(
-      "Use build function (watch can't be dispatched and It has performance Issue)")
+  @Deprecated("Use TelescopeBuilder instead")
   T watch(State state) {
     subscribe(state.setState);
     return holden;
