@@ -2,6 +2,8 @@
 <img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png" height="200" width="200"> <br>
 Easy to use <b>State manager</b> for flutter based on observer:eyes: design pattern.
 
+Note: There is a `1.x.x` branch for old friends [here](https://github.com/ali77gh/Telescope/tree/1.x.x).
+
 ``` Telescope is more than a normal observer. ```
 
 Telescope:telescope:
