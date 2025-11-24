@@ -200,8 +200,22 @@ class Telescope<T> {
   }
 
   /// Returns value of telescope
-  /// **corrected:** no delayed future
-  T get value => holden;
+  /// Will call [notifyAll] after change detected by hashcode
+  /// You can use holden if you don't need hashCode and change detection
+  T get value {
+    var beforeChangeHash = holden.hashCode;
+    // push callback to event loop immediately
+    Future.delayed(Duration.zero, () {
+      var afterChangeHash = holden.hashCode;
+      if (beforeChangeHash != afterChangeHash) {
+        notifyAll();
+        if (isSavable) {
+          SaveAndLoad.save(onDiskId!, onDiskSaveAbility, holden);
+        }
+      }
+    });
+    return holden;
+  }
 
   /// will set value and call [notifyAll]
   set value(T value) {
