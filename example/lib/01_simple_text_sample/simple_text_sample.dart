@@ -15,9 +15,9 @@ class TextSampleState extends State<TextSample> {
   Widget build(BuildContext context) {
     var style = const TextStyle(fontSize: 60);
     return Material(
-        type: MaterialType.transparency,
-        child: SafeArea(
-            child: GestureDetector(
+      type: MaterialType.transparency,
+      child: SafeArea(
+        child: GestureDetector(
           onTap: () {
             textValue.value += "a";
           },
@@ -31,6 +31,8 @@ class TextSampleState extends State<TextSample> {
               ],
             ),
           ),
-        )));
+        ),
+      ),
+    );
   }
 }
