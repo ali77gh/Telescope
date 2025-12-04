@@ -169,7 +169,7 @@ class Telescope<T> {
 
   /// [callback] will call when ever value get change
   int subscribe(Function callback) {
-    final id = new64BitRandom();
+    final id = uniqueCallbackId();
     _callbacks[id] = callback;
     return id;
   }
@@ -187,7 +187,7 @@ class Telescope<T> {
   /// Integer that returned by this function used in remove listener
   /// So widget can call remove listener on dispatch.
   int addListener(Function(T) listener) {
-    final id = new64BitRandom();
+    final id = uniqueCallbackId();
     _callbacks[id] = () => listener(this.holden);
     return id;
   }
@@ -250,10 +250,17 @@ class Telescope<T> {
     }
   }
 
-  int new64BitRandom() {
-    final left = this.random.nextInt(1 << 31);
+  int next64BitRandom() {
+    final left = this.random.nextInt(1 << 32);
     final right = this.random.nextInt(1 << 32);
     final combined = (left.toUnsigned(32) << 32) | right.toUnsigned(32);
-    return combined.toSigned(64);
+    return combined.toUnsigned(64);
+  }
+
+  int uniqueCallbackId() {
+    while (true) {
+      final id = next64BitRandom();
+      if (!_callbacks.containsKey(id)) return id;
+    }
   }
 }
