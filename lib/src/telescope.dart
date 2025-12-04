@@ -169,7 +169,7 @@ class Telescope<T> {
 
   /// [callback] will call when ever value get change
   int subscribe(Function callback) {
-    final id = this.random.nextInt(9223372036854775806); // Max 64-bit integer
+    final id = new64BitRandom();
     _callbacks[id] = callback;
     return id;
   }
@@ -187,7 +187,7 @@ class Telescope<T> {
   /// Integer that returned by this function used in remove listener
   /// So widget can call remove listener on dispatch.
   int addListener(Function(T) listener) {
-    final id = this.random.nextInt(9223372036854775806); // Max 64-bit integer
+    final id = new64BitRandom();
     _callbacks[id] = () => listener(this.holden);
     return id;
   }
@@ -248,5 +248,12 @@ class Telescope<T> {
         callback();
       }
     }
+  }
+
+  int new64BitRandom() {
+    final left = this.random.nextInt(1 << 31);
+    final right = this.random.nextInt(1 << 32);
+    final combined = (left.toUnsigned(32) << 32) | right.toUnsigned(32);
+    return combined.toSigned(64);
   }
 }
