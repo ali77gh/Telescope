@@ -1,4 +1,5 @@
-import 'package:app/01_simple_text_sample/simple_text_sample.dart';
+// import 'package:app/01_simple_text_sample/simple_text_sample.dart';
+import 'package:app/01_simple_text_sample/simple_text_sample_builder.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'IranSans'),
         debugShowCheckedModeBanner: false,
-        home: const TextSample());
+        home: TextSample());
   }
 }
