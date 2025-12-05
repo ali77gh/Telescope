@@ -1,97 +1,100 @@
 # Telescope
 <img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.png" height="200" width="200"> <br>
-Easy to use <b>State manager</b> for flutter based on observer:eyes: design pattern.
+Easy to use <b>State manager</b> for flutter based on observer👀 design pattern.
 
-Note: There is a `1.x.x` branch for old friends [here](https://github.com/ali77gh/Telescope/tree/1.x.x).
+Note: There is a `1.x.x` branch for old friends [here](https://github.com/ali77gh/Telescope/tree/1.x.x) but version `2.x.x` is much better and I suggest a refactor.
 
 ``` Telescope is more than a normal observer. ```
 
-Telescope:telescope:
+Telescope🔭
 <br>
+
 0. Supports all platforms.
-1. Easy to learn:book: 
+1. Easy to learn 📖 
    1. You can learn it in 5-10 min by reading README.
    2. Also see [examples](https://github.com/ali77gh/Telescope/tree/master/example/lib). 
    3. Full dart standard documentation [here](https://pub.dev/documentation/telescope/latest/telescope/telescope-library.html).
-2. Feature rich:hearts: 
-   1. Can directly bind to Flutters StateFullWidget and rebuild:recycle: widget on value change.
-   2. Save states on disk and load when needed.
-   3. Telescopes can watch each other with dependsOn() constructor.
-   4. Depends on can be async.
-   5. Caching ability with expireTime option.
-   6. debounceTime option (something like rx-js debounceTime).
-   7. Request a feature [here](https://github.com/ali77gh/Telescope/issues).
-3. Make it harder to make bugs:beetle::no_entry:.
-   1. With separation of concerns:raised_hands:.
-   2. No setState() needed:no_good:.
-4. Fast:zap: (just rebuild widgets that need to rebuild).
-5. Lightweight:hatched_chick: (less then 900KB)
-6. Flexible:ocean:
-   1. It lets you do it in your way as a library (not a framework):muscle:.
-   2. Can be used beside other state managers:couple:.
+2. Easy to use 🫶:
+   1. You can create an Automatically updatable Widget with a single `liveWidget` call.
+   2. Works with StateLessWidgets.
+   3. It Does call `setState()` for you on value change detection.
+3. Efficient 🏎️:
+   1. It only rebuilds small parts of page🪶.
+   2. Only rebuilds when needed.
+   3. Smart Disposal🗑️.
+   4. less then 900KB 🐣.
+4. Feature rich ♥️: 
+   1. It can save your states on disk if you want (good for user settings).
+   2. Telescopes can depends on each other by using `dependsOn()` constructor.
+   3. Depends on can be async.
+   4. Caching ability with `expireTime` option.
+   5. `debounceTime` option (something like rx-js debounceTime).
+   6. Request a feature [here](https://github.com/ali77gh/Telescope/issues).
+6. Flexible 🌊
+   1. It lets you do it in your way as a library (not a framework) 🗽.
+   2. Can be used beside other state managers 🤝.
 
 ### Installation:
 ```bash
 flutter pub add telescope
 ```
 
-### Import:
+# How to use
+3 simple steps.
+1. Create a Telescope instance
+2. Make a live widget with `liveWidget()` call.
+3. Update state
+4. Boom widget automatically got updated without `setState` call.
+
+### Example
+
 ```dart
 import 'package:telescope/telescope.dart';
-```
 
-# How to use
-In 3 steps.
-
-### 1. Make a telescope instance:
-```dart
-var textValue = Telescope("default value");
-```
-
-### 2. Watch(this):
-Put this in middle of you widget build function.<br>
-```dart
 @override
-Widget build(BuildContext context) {
-  return Material(
-      child: SafeArea(
-          child: Container(
-            child: Column(children: [
-              // watch like this ('this' is State that will automatically rebuild on data change)
-              Text(textValue.watch(this)), 
-              Text(textValue.watch(this)),
-              Text(textValue.watch(this).length.toString()),
-            ],),
-          )
-      )
-  );
+class TextSample extends StatelessWidget {
+  final textValue = Telescope(""); // Telescope instance with default empty string
+  final style = const TextStyle(fontSize: 60); 
+
+  TextSample({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => textValue.value += "a", // updating telescope value
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            // multiple update subscribers connected to single Telescope
+            textValue.liveWidget((context, value) => Text(value, style: style)), // automatic updates
+            textValue.liveWidget((context, value) => Text(value, style: style)), // automatic updates
+            textValue.liveWidget((context, value) => Text(value.length.toString(), style: style)), // automatic updates
+          ],
+        ),
+      ),
+    );
+  }
 }
 ```
-
-Note: You can watch one telescope instance from multiple widgets([example](https://github.com/ali77gh/Telescope/tree/master/example/lib/05_share_telescope_as_param)).
-
-### 3. Update value:
-You can update telescope.value from anywhere in your code:
-
-```dart
-onTap: (){
-  textValue.value += "a";
-}
-```
-
-### Boom:
-And the widget will get update automatically without calling setState.
-
+### Result:
 <img src="https://raw.githubusercontent.com/ali77gh/Telescope/master/telescope.gif"> <br>
 
-You can also subscribe to observable by passing callback like a normal observable.
+Note: You can also subscribe to observable by passing callback like a normal observable.
+(Just in case) 🤷🏻
 ```dart
 textValue.subscribe((newValue){
     // execute on value change
 });
 ```
 
+### Parent/Child relation 
+
+You can pass telescopes around freely,\
+See ([example](https://github.com/ali77gh/Telescope/tree/master/example/lib/05_share_telescope_as_param)).
+
 ### Non Builtin Types
+
 Just implement hashCode getter:
 ```dart
 class Human{
@@ -103,11 +106,29 @@ class Human{
    int get hashCode => height*weight;
 }
 ```
+
 And you are good to go:
+
 ```dart
-var human = Telescope<Human>(null);
+var human = Telescope<Human?>(null);
 ```
 
+Smart change detection needs `hashCode()` function to detect change (so that's why).
+
+But if you don't want to do this for some reason there is a way out:
+
+You can pass `iWillCallNotifyAll = true` and disable smart change detection:
+
+```dart
+var human = Telescope<Human>(Human("Ali", 24), iWillCallNotifyAll: true);
+```
+
+And make sure you call `notifyAll()` function manually after a change.
+
+```dart
+human.age = 30;
+human.notifyAll();
+```
 
 # Other features:
 
@@ -130,18 +151,16 @@ var showingText  = Telescope.dependsOn([bmi], () {
 So when ever height or weight value get changes, the bmi will calculate itself because it depends on height and weight.<br>
 And showingText will calculate itself too, because it depends on bmi.
 
-<br>
-
 #### Async way:
+
 ```dart
 var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
   return await calculateBMI(height.value, weight.value);
 });
 ```
 
-<br>
-
 #### Caching:
+
 ```dart
 var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
    return await calculateBMI(height.value, weight.value);
@@ -149,21 +168,21 @@ var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
 ```
 You can also set expire time by passing <b>cacheExpireTime</b>.
 
-<br>
-
 #### Debounce:
+
 debounceTime: will call your async function only if a given time has passed without any changes on dependencies.<br>
 ```dart
 var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
    return await calculateBMI(height.value, weight.value);
 }, debounceTime: Duration(milliseconds: 500));
 ```
-It's useful when you want to run your async function when user stop typing or moving slider or...
 
+It's useful when you want to run your async function when user stop typing or moving slider or...
 
 <br>
 
-#### Observable on loading state:
+#### Observable on calculating/loading state:
+
 This will make <b>isCalculatingBMI</b> true on loading and false when loaded, you may need this to show loading animation.
 ```dart
 var isCalculatingBMI = Telescope<bool>(false);
@@ -172,24 +191,16 @@ var bmi = Telescope.dependsOnAsync(0, [height, weight], () async {
 }, isCalculating: isCalculatingBMI);
 ```
 
-
 ### Save On Disk
+
 You can save telescope data on disk easily like this:
 ```dart
 var height = Telescope.saveOnDiskForBuiltInType(187, "bmi_height_input");
 ```
 So if user close the app and open it again it will load last value of telescope for You.
-<br>
 
-### TelescopeList
-Telescope implementation for list
-   * can be dependent
-   * can save on disk
-```dart
-var items = TelescopeList(["ab", "abb", "bc", "bcc" , "c"]);
-```
+### Save non built-in values on disk
 
-### Save non built in values on disk
 You need to implement OnDiskSaveAbility for your object:<br>
 For example you have Human class:
 ```dart
@@ -202,6 +213,7 @@ class Human{
    int get hashCode => height*weight;
 }
 ```
+
 Then you need to make other class like this for Human:
 ```dart
 class HumanOnDiskAbility implements OnDiskSaveAbility<Human>{
@@ -224,32 +236,15 @@ var human = Telescope.saveOnDiskForNonBuiltInType(
         HumanOnDiskAbility()
 );
 ```
+
 Telescope will use 'parseOnDiskString' and 'toOnDiskString' to serialize and deserialize your object.
-<br><br>
-
-This method also can use in TelescopeList in same way.
-
-<br>
-
-### New Features
-
-- TelescopeList: list version of Telescope
-   - Supports dependency on other telescopes
-   - Can save/load on disk
-   - Calls `notifyAll` only once per actual change to avoid double rebuilds
-- TelescopeBuilder: widget to rebuild only the widget that depends on telescope value
-- TelescopeProvider: provide telescopes down the widget tree for easy access
-- Selection API: watch and update selected items in lists efficiently
-- Example: [https://github.com/ali77gh/Telescope/tree/master/example/lib//08_selective_rebuild_sample]
-
-<br>
 
 # Last Words:
-   * Plz:pray: star:star: repo.
+   * Plz🙏 star ⭐repo.
    * [Full documentation](https://pub.dev/documentation/telescope/latest/telescope/telescope-library.html).
    * [Examples](https://github.com/ali77gh/Telescope/tree/master/example/lib).
    * Static instance of Telescopes? 
-     * it's not recommend because it decreases re-usability of your code, but in some use-cases it's OK to do that.
+     * it's not recommend because it decreases re-usability of your code, but in some use-cases it's OK to do that🤷🏻.
    * Extends from Telescope?
      * Why not? TelescopeList actually extends from Telescope
    * Under MIT license 
