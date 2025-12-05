@@ -2,9 +2,9 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:telescope/src/fs/save_and_load.dart';
-import 'package:telescope/src/telescope_builder.dart';
-import 'package:telescope/src/type_check.dart';
+import 'fs/save_and_load.dart';
+import 'telescope_builder.dart';
+import 'type_check.dart';
 
 import 'fs/on_disk_save_ability.dart';
 
@@ -179,6 +179,7 @@ class Telescope<T> {
   /// and this function also returns value to use it on build function.
   @Deprecated("Use liveWidget() instead")
   T watch(State state) {
+    // ignore: invalid_use_of_protected_member
     subscribe(state.setState);
     return holden;
   }
@@ -189,7 +190,7 @@ class Telescope<T> {
   /// So widget can call remove listener on dispatch.
   int addListener(Function(T) listener) {
     final id = uniqueCallbackId();
-    _callbacks[id] = () => listener(this.holden);
+    _callbacks[id] = () => listener(holden);
     return id;
   }
 
@@ -217,7 +218,7 @@ class Telescope<T> {
     return holden;
   }
 
-  /// will set value and call [notifyAll]
+  /// Will set value and call [notifyAll]
   set value(T value) {
     if (isDependent) {
       throw "this telescope is dependent on "
@@ -236,7 +237,7 @@ class Telescope<T> {
     }
   }
 
-  /// this will call build on every watchers and call all callback functions.
+  /// This will call build on every watchers and call all callback functions.
   void notifyAll() {
     for (Function callback in _callbacks.values) {
       if (callback is Function(VoidCallback)) {
@@ -251,17 +252,22 @@ class Telescope<T> {
     }
   }
 
+  /// Creates a live widget by passing a widget builder function
+  /// Passed function will be called every time value change
   TelescopeBuilder<T> liveWidget(TelescopeWidgetBuilder<T> builder) {
     return TelescopeBuilder<T>(this, builder);
   }
 
+  /// this creates signed 64 bit integer used for callback id
+  /// used for dispose and removeListener
   int next64BitRandom() {
-    final left = this.random.nextInt(1 << 32);
-    final right = this.random.nextInt(1 << 32);
+    final left = random.nextInt(1 << 32);
+    final right = random.nextInt(1 << 32);
     final combined = (left.toUnsigned(32) << 32) | right.toUnsigned(32);
     return combined.toUnsigned(64);
   }
 
+  /// Makes sure generated Id is not already in callbacks list
   int uniqueCallbackId() {
     while (true) {
       final id = next64BitRandom();

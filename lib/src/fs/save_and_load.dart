@@ -11,16 +11,16 @@ class SaveAndLoad {
 
     var pref = await SharedPreferences.getInstance();
     switch (T) {
-      case String:
+      case const (String):
         await pref.setString(onDiskId, value as String);
         break;
-      case int:
+      case const (int):
         await pref.setInt(onDiskId, value as int);
         break;
-      case double:
+      case const (double):
         await pref.setDouble(onDiskId, value as double);
         break;
-      case bool:
+      case const (bool):
         await pref.setBool(onDiskId, value as bool);
         break;
       default:
@@ -40,13 +40,13 @@ class SaveAndLoad {
     }
 
     switch (T) {
-      case String:
+      case const (String):
         return pref.getString(onDiskId) as T;
-      case int:
+      case const (int):
         return pref.getInt(onDiskId) as T;
-      case double:
+      case const (double):
         return pref.getDouble(onDiskId) as T;
-      case bool:
+      case const (bool):
         return pref.getBool(onDiskId) as T;
       default:
         return onDiskSaveAbility!.parseOnDiskString(pref.getString(onDiskId)!);
@@ -85,13 +85,13 @@ class SaveAndLoad {
     return pref.getString(onDiskId)!.split("-$sep").map((i) {
       i = i.replaceAll("\\$sep", sep);
       switch (T) {
-        case bool:
+        case const (bool):
           return (i == "true") as T;
-        case int:
+        case const (int):
           return (int.parse(i)) as T;
-        case double:
+        case const (double):
           return (double.parse(i)) as T;
-        case String:
+        case const (String):
           return (i) as T;
         default:
           return onDiskSaveAbility!.parseOnDiskString(i);
