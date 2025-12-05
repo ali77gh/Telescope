@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:telescope/src/fs/save_and_load.dart';
+import 'package:telescope/src/telescope_builder.dart';
 import 'package:telescope/src/type_check.dart';
 
 import 'fs/on_disk_save_ability.dart';
@@ -176,7 +177,7 @@ class Telescope<T> {
 
   /// [state] will rebuild on value change
   /// and this function also returns value to use it on build function.
-  @Deprecated("Use TelescopeBuilder instead")
+  @Deprecated("Use liveWidget() instead")
   T watch(State state) {
     subscribe(state.setState);
     return holden;
@@ -248,6 +249,10 @@ class Telescope<T> {
         callback();
       }
     }
+  }
+
+  TelescopeBuilder<T> liveWidget(TelescopeWidgetBuilder<T> builder) {
+    return TelescopeBuilder<T>(this, builder);
   }
 
   int next64BitRandom() {

@@ -14,11 +14,7 @@ class TelescopeBuilder<T> extends StatefulWidget {
   /// Builder function that receives the current value of the Telescope
   final TelescopeWidgetBuilder<T> builder;
 
-  const TelescopeBuilder({
-    required this.telescope,
-    required this.builder,
-    Key? key,
-  }) : super(key: key);
+  const TelescopeBuilder(this.telescope, this.builder, {super.key});
 
   @override
   _TelescopeBuilderState<T> createState() => _TelescopeBuilderState<T>();
