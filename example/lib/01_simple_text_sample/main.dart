@@ -12,8 +12,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(fontFamily: 'IranSans'),
-        debugShowCheckedModeBanner: false,
-        home: TextSample());
+      theme: ThemeData(fontFamily: 'IranSans'),
+      debugShowCheckedModeBanner: false,
+      home: Material(
+        type: MaterialType.transparency,
+        child: SafeArea(child: TextSample()),
+      ),
+    );
   }
 }
