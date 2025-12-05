@@ -32,3 +32,10 @@
 # 1.4.2
 
 * performance improve
+
+# 2.0.0
+
+* `watch()` function deprecated.
+* `liveWidget()` is new way to make reactive widget.
+* `StateLessWidget` now can be used with Telescope.
+* Huge performance improvement be removing callbacks from callback list on `Widget.dispose()`
