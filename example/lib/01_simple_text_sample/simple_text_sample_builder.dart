@@ -18,19 +18,12 @@ class TextSample extends StatelessWidget {
             color: Colors.white,
             child: Column(
               children: [
-                TelescopeBuilder<String>(
-                  telescope: textValue,
-                  builder: (context, value) => Text(value, style: style),
-                ),
-                TelescopeBuilder<String>(
-                  telescope: textValue,
-                  builder: (context, value) => Text(value, style: style),
-                ),
-                TelescopeBuilder<String>(
-                  telescope: textValue,
-                  builder: (context, value) =>
-                      Text(value.length.toString(), style: style),
-                ),
+                textValue
+                    .liveWidget((context, value) => Text(value, style: style)),
+                textValue
+                    .liveWidget((context, value) => Text(value, style: style)),
+                textValue.liveWidget((context, value) =>
+                    Text(value.length.toString(), style: style)),
               ],
             ),
           ),

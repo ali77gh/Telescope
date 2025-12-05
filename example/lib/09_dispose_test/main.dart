@@ -21,15 +21,11 @@ class DisposeTest extends StatelessWidget {
           },
           child: Container(
             color: Colors.white,
-            child: TelescopeBuilder<bool>(
-              telescope: visible,
-              builder: (context, visibility_) {
+            child: visible.liveWidget(
+              (context, visibility_) {
                 if (visibility_) {
-                  return TelescopeBuilder<int>(
-                    telescope: counter,
-                    builder: (context, counter_) =>
-                        Text(counter_.toString(), style: style),
-                  );
+                  return counter.liveWidget((context, counter_) =>
+                      Text(counter_.toString(), style: style));
                 } else {
                   return const Text("click to see");
                 }

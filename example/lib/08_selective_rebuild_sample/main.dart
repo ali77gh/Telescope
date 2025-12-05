@@ -15,16 +15,9 @@ class MyApp extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TelescopeBuilder<int>(
-                telescope: counter,
-                builder: (context, value) {
-                  print('Counter rebuilt');
-                  return Text(
-                    'Counter value: $value',
-                    style: const TextStyle(fontSize: 24),
-                  );
-                },
-              ),
+              counter.liveWidget((context, value) => Text(
+                  'Counter value: $value',
+                  style: const TextStyle(fontSize: 24))),
               const SizedBox(height: 10),
               Row(
                 children: [
@@ -41,31 +34,26 @@ class MyApp extends StatelessWidget {
               ),
               const Divider(height: 30, thickness: 2),
               // ---- List Section ----
-              Expanded(
-                child: TelescopeBuilder<List<String>>(
-                  telescope: items,
-                  builder: (context, list) {
-                    print('List rebuilt');
-                    if (list.isEmpty) {
-                      return const Center(child: Text('No items yet'));
-                    }
-                    return ListView.builder(
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(list[index]),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              items.removeAt(index);
-                            },
-                          ),
-                        );
-                      },
+              Expanded(child: items.liveWidget((context, list) {
+                print('List rebuilt');
+                if (list.isEmpty) {
+                  return const Center(child: Text('No items yet'));
+                }
+                return ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(list[index]),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          items.removeAt(index);
+                        },
+                      ),
                     );
                   },
-                ),
-              ),
+                );
+              })),
               const SizedBox(height: 10),
               Row(
                 children: [
