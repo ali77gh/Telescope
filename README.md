@@ -103,7 +103,7 @@ class Human{
    Human(this.height,this.weight);
 
    @override
-   int get hashCode => height*weight;
+   int get hashCode => Object.hash(name.hashCode, age.hashCode); // recommended way
 }
 ```
 
@@ -126,7 +126,7 @@ var human = Telescope<Human>(Human("Ali", 24), iWillCallNotifyAll: true);
 And make sure you call `notifyAll()` function manually after a change.
 
 ```dart
-human.age = 30;
+human.value.age = 30;
 human.notifyAll();
 ```
 

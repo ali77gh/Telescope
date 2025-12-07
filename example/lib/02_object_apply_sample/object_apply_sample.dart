@@ -47,7 +47,7 @@ class Human {
   }
 
   @override
-  int get hashCode => (name.hashCode) * age.hashCode;
+  int get hashCode => Object.hash(name.hashCode, age.hashCode);
 
   @override
   bool operator ==(Object other) => hashCode == other.hashCode;

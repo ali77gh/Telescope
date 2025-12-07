@@ -7,7 +7,7 @@ class Human {
   Human(this.height, this.weight);
 
   @override
-  int get hashCode => height * weight;
+  int get hashCode => Object.hash(height, weight);
 
   @override
   bool operator ==(Object other) => hashCode == other.hashCode;

@@ -7,7 +7,7 @@ class Contact {
   Contact(this.name, this.phone);
 
   @override
-  int get hashCode => name.hashCode * phone.hashCode;
+  int get hashCode => Object.hash(name, phone);
 
   @override
   bool operator ==(Object other) => hashCode == other.hashCode;
