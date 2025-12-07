@@ -258,19 +258,10 @@ class Telescope<T> {
     return TelescopeBuilder<T>(this, builder);
   }
 
-  /// this creates signed 64 bit integer used for callback id
-  /// used for dispose and removeListener
-  int next64BitRandom() {
-    final left = random.nextInt(1 << 32);
-    final right = random.nextInt(1 << 32);
-    final combined = (left.toUnsigned(32) << 32) | right.toUnsigned(32);
-    return combined.toUnsigned(64);
-  }
-
   /// Makes sure generated Id is not already in callbacks list
   int uniqueCallbackId() {
     while (true) {
-      final id = next64BitRandom();
+      final id = random.nextInt(4294967290);
       if (!_callbacks.containsKey(id)) return id;
     }
   }
