@@ -1,6 +1,7 @@
 import 'dart:collection';
+import 'dart:io';
 import 'dart:math';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'fs/save_and_load.dart';
 import 'telescope_builder.dart';
@@ -240,14 +241,15 @@ class Telescope<T> {
   /// This will call build on every watchers and call all callback functions.
   void notifyAll() {
     for (Function callback in _callbacks.values) {
-      if (callback is Function(VoidCallback)) {
-        try {
+      try {
+        if (callback is Function(VoidCallback)) {
           callback(() {});
-        } catch (e) {
-          /*ignore*/
+        } else {
+          callback();
         }
-      } else {
-        callback();
+      } catch (e, st) {
+        stderr.writeln('Error while telescope calls your callback: $e');
+        if (kDebugMode) print(st);
       }
     }
   }
